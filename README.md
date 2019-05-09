@@ -1,2 +1,2 @@
 # CV-asp.net-mvc
-create cv by filling forms
+create cv by submiting forms
