@@ -2,7 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="jumbotron">
+        <h1 class="display-4">Hello, world!</h1>
+        <p class="lead">This is a simple app, with which you can easily create a resume.</p>
+        <hr class="my-4">
+        @if (this.User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="PersonalInfo" asp-action="Index" class="btn btn-primary btn-lg">Start</a>
+        }
+        else
+        {
+            <p>If you don't have an account yet, please <a asp-area="Identity" asp-page="/Account/Register">Register</a> first, otherwise <a asp-area="Identity" asp-page="/Account/Login">Login</a>.</p>
+        }
+
+    </div>

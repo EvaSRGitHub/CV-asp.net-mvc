@@ -15,8 +15,10 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CVApp.Common\CVApp.Common\CVApp.Common.csproj" />
     <ProjectReference Include="..\..\..\CVApp.Data\CVApp.Data\CVApp.Data.csproj" />
     <ProjectReference Include="..\..\..\CVApp.Models\CVApp.Models\CVApp.Models.csproj" />
+    <ProjectReference Include="..\..\..\CVApp.ViewModels\ViewModels\CVApp.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

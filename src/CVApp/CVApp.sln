@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CVApp.Models", "..\CVApp.Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVApp.Common", "..\CVApp.Common\CVApp.Common\CVApp.Common.csproj", "{0AD56609-0801-437D-B109-2ABF564E67DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVApp.ViewModels", "..\CVApp.ViewModels\ViewModels\CVApp.ViewModels.csproj", "{F4F0E044-9138-41ED-AB2A-22F6336053BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{0AD56609-0801-437D-B109-2ABF564E67DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AD56609-0801-437D-B109-2ABF564E67DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AD56609-0801-437D-B109-2ABF564E67DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4F0E044-9138-41ED-AB2A-22F6336053BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4F0E044-9138-41ED-AB2A-22F6336053BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4F0E044-9138-41ED-AB2A-22F6336053BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4F0E044-9138-41ED-AB2A-22F6336053BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
