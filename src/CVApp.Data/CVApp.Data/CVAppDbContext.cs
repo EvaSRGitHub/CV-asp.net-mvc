@@ -16,9 +16,10 @@ namespace CVApp.Data
         {
         }
 
+        public DbSet<Resume> Resumes { get; set; }
         public DbSet<Education> Educations { get; set; }
         public DbSet<WorkExperience> Works { get; set; }
-        public DbSet<Skill> Skils { get; set; }
+        public DbSet<Skill> Skills { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<Language> Languages { get; set; }
 
@@ -26,6 +27,15 @@ namespace CVApp.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<CVAppUser>(entity =>
+            {
+                entity.HasOne(e => e.Resume).WithOne(r => r.User).HasForeignKey<Resume>(b => b.UserId);
+            });
+
+            builder.Entity<CVAppUser>()
+            .HasIndex(p => p.UserName)
+            .IsUnique();
         }
     }
 }

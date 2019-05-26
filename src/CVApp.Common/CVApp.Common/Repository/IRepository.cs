@@ -11,6 +11,8 @@ namespace CVApp.Common.Repository
     {
         IQueryable<TEntity> All();
 
+        Task<TEntity> GetByIdAsync(params object[] id);
+
         Task AddAsync(TEntity entity);
 
         void Delete(TEntity entity);

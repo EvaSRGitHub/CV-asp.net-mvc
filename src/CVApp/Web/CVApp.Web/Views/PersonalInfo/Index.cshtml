@@ -1,0 +1,82 @@
+﻿@model CVApp.ViewModels.PersonalInfoViewModel
+
+@{
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <h2>Personal Information</h2>
+            <hr />
+
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="FirstName">First name</label>
+                        <input asp-for="FirstName" class="form-control" placeholder="Ivan, Ana-Maria">
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="LastName">Last name</label>
+                        <input asp-for="LastName" class="form-control" placeholder="Petrov, Mc'Dugal">
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="PhoneNumber">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="+359/888888888">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="DateOfBirth">Date of birth</label>
+                        <!--the input format is dd/MM/yyyy-->
+                        <input asp-for="DateOfBirth" type="date" class="form-control">
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Picture">Picture</label>
+                        <input asp-for="Picture" type="file" class="form-control-file" placeholder="Paste your picture here">
+                        <span asp-validation-for="Picture" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="RepoProfile">Portfolio</label>
+                        <input asp-for="RepoProfile" type="url" class="form-control" placeholder="Paste your portfolio url here">
+                        <span asp-validation-for="RepoProfile" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address">Address</label>
+                    <input asp-for="Address" class="form-control" placeholder="12 Downing Str, London, England">
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Summary">Summary</label>
+                    <textarea id="mytextarea" asp-for="Summary" class="form-control" rows="5" placeholder="Brief nerrative about yourself"></textarea>
+                    <span asp-validation-for="Summary" class="text-danger"></span>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary" asp-route-userName="@User.Identity.Name">Submit</button>
+                    </div>
+                    <div class="col-auto">
+                        <a asp-controller="EducationController" asp-action="Index" class="btn btn-secondary" role="button" aria-pressed="true">Next - Education Info</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>tinymce.init({ selector: '#mytextarea' });</script>
+    <partial name="_ValidationScriptsPartial" />
+}

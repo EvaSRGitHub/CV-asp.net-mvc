@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +11,8 @@ namespace CVApp.Models
     // Add profile data for application users by adding properties to the CVAppUser class
     public class CVAppUser : IdentityUser
     {
-        
         public string FirstName { get; set; }
-
+        
         public string LastName { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
@@ -23,16 +23,11 @@ namespace CVApp.Models
 
         public string Picture { get; set; }
 
-        public string GitHubProfile { get; set; }
+        public string RepoProfile { get; set; }
 
-        public virtual IEnumerable<Education> Education { get; set; }
+        public Resume Resume { get; set; }
 
-        public virtual IEnumerable<WorkExperience> Works { get; set; }
-
-        public virtual IEnumerable<Certificate> Certificates { get; set; }
-
-        public virtual IEnumerable<Language> Languages { get; set; }
-
-        public virtual IEnumerable<Skill> Skills { get; set; }
+        [ForeignKey("Resume")]
+        public int? ResumeId { get; set; }
     }
 }

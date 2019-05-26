@@ -4,7 +4,8 @@ using System.Text;
 
 namespace CVApp.Common.Services
 {
-    interface ICVService
+    public interface ICloudinaryService
     {
+        string Upload(string filePath);
     }
 }

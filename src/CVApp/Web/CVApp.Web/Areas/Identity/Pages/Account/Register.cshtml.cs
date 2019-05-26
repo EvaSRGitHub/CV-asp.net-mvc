@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using CVApp.Common.Services;
 using CVApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,17 +21,19 @@ namespace CVApp.Web.Areas.Identity.Pages.Account
         private readonly UserManager<CVAppUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IResumeService _resumeService;
 
         public RegisterModel(
             UserManager<CVAppUser> userManager,
             SignInManager<CVAppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IResumeService resumeService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _resumeService = resumeService;
         }
 
         [BindProperty]
@@ -68,7 +71,9 @@ namespace CVApp.Web.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new CVAppUser { UserName = Input.Email, Email = Input.Email };
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -83,7 +88,17 @@ namespace CVApp.Web.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                    try
+                    {
+                        await this._resumeService.CreateResume(user.Id);
+                    }
+                    catch (Exception e)
+                    {
+                        this._logger.LogError(e.Message);
+                    }
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

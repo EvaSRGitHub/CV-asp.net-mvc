@@ -40,8 +40,6 @@ namespace CVApp.Data.Migrations
 
                     b.Property<string>("FirstName");
 
-                    b.Property<string>("GitHubProfile");
-
                     b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");
@@ -62,6 +60,10 @@ namespace CVApp.Data.Migrations
 
                     b.Property<string>("Picture");
 
+                    b.Property<string>("RepoProfile");
+
+                    b.Property<int?>("ResumeId");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<string>("Summary");
@@ -80,6 +82,10 @@ namespace CVApp.Data.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserName")
+                        .IsUnique()
+                        .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -100,12 +106,11 @@ namespace CVApp.Data.Migrations
                     b.Property<string>("IssuingAuthority")
                         .IsRequired();
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<int>("ResumeId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ResumeId");
 
                     b.ToTable("Certificates");
                 });
@@ -132,14 +137,13 @@ namespace CVApp.Data.Migrations
                     b.Property<string>("Institution")
                         .IsRequired();
 
-                    b.Property<DateTime>("ToYear");
+                    b.Property<int>("ResumeId");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<DateTime>("ToYear");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ResumeId");
 
                     b.ToTable("Educations");
                 });
@@ -156,14 +160,30 @@ namespace CVApp.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<int>("ResumeId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResumeId");
+
+                    b.ToTable("Languages");
+                });
+
+            modelBuilder.Entity("CVApp.Models.Resume", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<string>("UserId")
                         .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.ToTable("Languages");
+                    b.ToTable("Resumes");
                 });
 
             modelBuilder.Entity("CVApp.Models.Skill", b =>
@@ -175,14 +195,13 @@ namespace CVApp.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<int>("ResumeId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ResumeId");
 
-                    b.ToTable("Skils");
+                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("CVApp.Models.WorkExperience", b =>
@@ -202,17 +221,16 @@ namespace CVApp.Data.Migrations
 
                     b.Property<DateTime>("FromYear");
 
+                    b.Property<int>("ResumeId");
+
                     b.Property<string>("Title")
                         .IsRequired();
 
                     b.Property<DateTime>("ToYear");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ResumeId");
 
                     b.ToTable("Works");
                 });
@@ -333,41 +351,49 @@ namespace CVApp.Data.Migrations
 
             modelBuilder.Entity("CVApp.Models.Certificate", b =>
                 {
-                    b.HasOne("CVApp.Models.CVAppUser", "User")
+                    b.HasOne("CVApp.Models.Resume", "Resume")
                         .WithMany("Certificates")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CVApp.Models.Education", b =>
                 {
-                    b.HasOne("CVApp.Models.CVAppUser", "User")
+                    b.HasOne("CVApp.Models.Resume", "Resume")
                         .WithMany("Education")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CVApp.Models.Language", b =>
                 {
-                    b.HasOne("CVApp.Models.CVAppUser", "User")
+                    b.HasOne("CVApp.Models.Resume", "Resume")
                         .WithMany("Languages")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CVApp.Models.Resume", b =>
+                {
+                    b.HasOne("CVApp.Models.CVAppUser", "User")
+                        .WithOne("Resume")
+                        .HasForeignKey("CVApp.Models.Resume", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CVApp.Models.Skill", b =>
                 {
-                    b.HasOne("CVApp.Models.CVAppUser", "User")
+                    b.HasOne("CVApp.Models.Resume", "Resume")
                         .WithMany("Skills")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CVApp.Models.WorkExperience", b =>
                 {
-                    b.HasOne("CVApp.Models.CVAppUser", "User")
+                    b.HasOne("CVApp.Models.Resume", "Resume")
                         .WithMany("Works")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

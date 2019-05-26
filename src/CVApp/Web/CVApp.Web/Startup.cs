@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CVApp.Models;
 using CVApp.Common.Repository;
+using CVApp.Common.Sanitizer;
+using CVApp.Common.Services;
 
 namespace CVApp.Web
 {
@@ -35,21 +37,22 @@ namespace CVApp.Web
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
-            }); 
+            });
 
             services.AddDbContext<CVAppDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("CVAppDbContextConnection"),sqlServerOptionsAction: sqlOptions =>
-                    {
+                    Configuration.GetConnectionString("CVAppDbContextConnection"), sqlServerOptionsAction: sqlOptions =>
+                     {
                         //enables resilient SQL connections that are retried if the connection fails.
                         sqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                    }).UseLazyLoadingProxies());
+                         maxRetryCount: 5,
+                         maxRetryDelay: TimeSpan.FromSeconds(30),
+                         errorNumbersToAdd: null);
+                     }));
 
             services.AddDefaultIdentity<CVAppUser>(options =>
             {
+                //to override pass length should change minLength attribute in Pages: Register, Set, Change and ResetPass;
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
@@ -60,9 +63,18 @@ namespace CVApp.Web
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<CVAppDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<ISanitizer, HtmlSanitizerAdapter>();
+            services.AddScoped<IPersonalInfoService, PersonalInfoService>();
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IStartService, StartService>();
+            services.AddScoped<IResumeService, ResumeService>();
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

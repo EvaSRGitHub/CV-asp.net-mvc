@@ -41,13 +41,14 @@ namespace CVApp.Data.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    FirstName = table.Column<string>(nullable: false),
-                    LastName = table.Column<string>(nullable: false),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
-                    Address = table.Column<string>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    DateOfBirth = table.Column<DateTime>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
                     Summary = table.Column<string>(nullable: true),
-                    Picture = table.Column<string>(nullable: false),
-                    GitHubProfile = table.Column<string>(nullable: false)
+                    Picture = table.Column<string>(nullable: true),
+                    RepoProfile = table.Column<string>(nullable: true),
+                    ResumeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -161,6 +162,25 @@ namespace CVApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Resumes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Resumes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Resumes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Certificates",
                 columns: table => new
                 {
@@ -170,15 +190,15 @@ namespace CVApp.Data.Migrations
                     IssuingAuthority = table.Column<string>(nullable: false),
                     AdditionalInfo = table.Column<string>(nullable: true),
                     DateOfIssue = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    ResumeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Certificates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Certificates_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Certificates_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -196,15 +216,15 @@ namespace CVApp.Data.Migrations
                     GPA = table.Column<double>(nullable: false),
                     City = table.Column<string>(nullable: false),
                     Country = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    ResumeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Educations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Educations_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Educations_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -217,35 +237,35 @@ namespace CVApp.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
                     Level = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    ResumeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Languages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Languages_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Languages_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skils",
+                name: "Skills",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    ResumeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skils", x => x.Id);
+                    table.PrimaryKey("PK_Skills", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Skils_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Skills_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -262,15 +282,15 @@ namespace CVApp.Data.Migrations
                     Country = table.Column<string>(nullable: false),
                     FromYear = table.Column<DateTime>(nullable: false),
                     ToYear = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    ResumeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Works", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Works_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Works_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -315,29 +335,42 @@ namespace CVApp.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Certificates_UserId",
+                name: "IX_AspNetUsers_UserName",
+                table: "AspNetUsers",
+                column: "UserName",
+                unique: true,
+                filter: "[UserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificates_ResumeId",
                 table: "Certificates",
-                column: "UserId");
+                column: "ResumeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Educations_UserId",
+                name: "IX_Educations_ResumeId",
                 table: "Educations",
-                column: "UserId");
+                column: "ResumeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Languages_UserId",
+                name: "IX_Languages_ResumeId",
                 table: "Languages",
-                column: "UserId");
+                column: "ResumeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Skils_UserId",
-                table: "Skils",
-                column: "UserId");
+                name: "IX_Resumes_UserId",
+                table: "Resumes",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Works_UserId",
+                name: "IX_Skills_ResumeId",
+                table: "Skills",
+                column: "ResumeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Works_ResumeId",
                 table: "Works",
-                column: "UserId");
+                column: "ResumeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -367,13 +400,16 @@ namespace CVApp.Data.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "Skils");
+                name: "Skills");
 
             migrationBuilder.DropTable(
                 name: "Works");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Resumes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

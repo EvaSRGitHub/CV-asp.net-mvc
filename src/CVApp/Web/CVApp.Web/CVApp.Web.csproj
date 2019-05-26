@@ -8,6 +8,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="TinyMCE" Version="4.9.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
@@ -19,6 +20,12 @@
     <ProjectReference Include="..\..\..\CVApp.Data\CVApp.Data\CVApp.Data.csproj" />
     <ProjectReference Include="..\..\..\CVApp.Models\CVApp.Models\CVApp.Models.csproj" />
     <ProjectReference Include="..\..\..\CVApp.ViewModels\ViewModels\CVApp.ViewModels.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Views\EducationInfo\" />
+    <Folder Include="wwwroot\tempImgs\" />
   </ItemGroup>
 
 </Project>

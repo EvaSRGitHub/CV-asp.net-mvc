@@ -11,8 +11,8 @@ namespace CVApp.Models
         public string Name { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public int ResumeId { get; set; }
 
-        public virtual CVAppUser User { get; set; }
+        public Resume Resume { get; set; }
     }
 }

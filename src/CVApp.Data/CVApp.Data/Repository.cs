@@ -55,5 +55,11 @@ namespace CVApp.Data
         {
             return this.dbset.AddAsync(entity);
         }
+
+        public Task<TEntity> GetByIdAsync(params object[] id)
+        {
+            return this.dbset.FindAsync(id);
+        }
+
     }
 }
