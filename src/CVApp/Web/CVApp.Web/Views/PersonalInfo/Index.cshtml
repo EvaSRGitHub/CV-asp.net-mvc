@@ -1,4 +1,4 @@
-﻿@model CVApp.ViewModels.PersonalInfoViewModel
+﻿@model CVApp.ViewModels.PersonalInfo.PersonalInfoViewModel
 
 @{
 }
@@ -63,12 +63,9 @@
                     <textarea id="mytextarea" asp-for="Summary" class="form-control" rows="5" placeholder="Brief nerrative about yourself"></textarea>
                     <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
-                <div class="row justify-content-between">
+                <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary" asp-route-userName="@User.Identity.Name">Submit</button>
-                    </div>
-                    <div class="col-auto">
-                        <a asp-controller="EducationController" asp-action="Index" class="btn btn-secondary" role="button" aria-pressed="true">Next - Education Info</a>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </form>

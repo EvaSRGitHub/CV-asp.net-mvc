@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CVApp.ViewModels
+namespace CVApp.ViewModels.PersonalInfo
 {
     public class PersonalInfoViewModel
     {
-        public string UserName { get; set; }
-
         [Required, Display(Name = "First name")]
         [RegularExpression("^(?=[A-Z][a-z])([A-Za-z]|[A-Za-z][-](?=[A-Za-z])|(?=[A-Za-z]))*$", ErrorMessage = "First name could contains only english letters and hyphen")]
         public string FirstName { get; set; }
@@ -33,8 +31,9 @@ namespace CVApp.ViewModels
 
         public string Summary { get; set; }
 
-        [Required(ErrorMessage = "Please provide your current photo"), Display(Name= "Picture")]
         public IFormFile Picture { get; set; }
+
+        public string CurrentPicture { get; set; }
 
         [Required(ErrorMessage = "Please provide url to your projects"), Display(Name = "Portfolio")]
         public string RepoProfile { get; set; }

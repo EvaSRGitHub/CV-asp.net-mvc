@@ -9,10 +9,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CVApp.Common.Services
 {
@@ -37,14 +40,30 @@ namespace CVApp.Common.Services
             this.logger = logger;
         }
 
-        public Task EditForm(PersonalInfoViewModel model)
+        public PersonalInfoViewModel EditForm(string userName)
         {
-            throw new NotImplementedException();
+            var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
+
+            var model = new PersonalInfoViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth.Value,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Picture = null,
+                CurrentPicture = user.Picture,
+                Address = user.Address,
+                RepoProfile = user.RepoProfile,
+                Summary = this.StripHtml(user.Summary)
+            };
+
+            return model;
         }
 
-        public PersonalInfoOutViewModel GetFormToEditOrDelete(string userIdentifier)
+        public PersonalInfoOutViewModel DisplayForm(string userName)
         {
-            var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userIdentifier);
+            var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
 
             var model = new PersonalInfoOutViewModel
             {
@@ -56,55 +75,101 @@ namespace CVApp.Common.Services
                 Picture = user.Picture,
                 Email = user.Email,
                 RepoProfile = user.RepoProfile,
-                Summary = this.sanitizer.Sanitize(user.Summary)
+                Summary = HttpUtility.HtmlDecode(user.Summary)
             };
 
             return model;
         }
 
-        public Task MarkFormAsDeleted(PersonalInfoViewModel model)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task SaveFormData(PersonalInfoViewModel model, string userName)
         {
-            //check for vlidity???
-
-            var name = model.FirstName + "_" + model.LastName + ".jpg";
-            var filePath = this.environment.WebRootPath + "/tempImgs/" + name;
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.Picture.CopyToAsync(fileStream);
-            }
-
-            var pictrueUrl = this.cloudinaryService.Upload(filePath);
-
-            if (!Uri.IsWellFormedUriString(pictrueUrl, UriKind.Absolute))
-            {
-                //TODO - Error View
-            }
-
             var resume = this.resumeRepo.All().Include("User").SingleOrDefault(u => u.User.UserName == userName);
+
+            if (model.Picture == null && resume.User.Picture == null)
+            {
+                throw new NullReferenceException("Please provide your recent photo.");
+            }
+
+            string filePath = string.Empty;
+            string pictureUrl = string.Empty;
+            string publicId = string.Empty;
+
+            if(model.Picture != null)
+            {
+                var name = model.FirstName + "_" + model.LastName + ".jpg";
+                filePath = this.environment.WebRootPath + "/tempImgs/" + name;
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.Picture.CopyToAsync(fileStream);
+                }
+
+                pictureUrl = this.cloudinaryService.Upload(filePath);
+
+                publicId = this.cloudinaryService.PublicId;
+
+                if (!Uri.IsWellFormedUriString(pictureUrl, UriKind.Absolute))
+                {
+                    //TODO - Error View
+                }
+
+                if(resume.User.Picture != null)
+                {
+                    this.cloudinaryService.DeleteCloudinaryImg(resume.User.CloudinaryPublicId);
+                }
+
+                resume.User.Picture = pictureUrl;
+                resume.User.CloudinaryPublicId = publicId;
+
+                File.Delete(filePath);
+            }
+
+            resume.User.ResumeId = resume.Id;
+            resume.User.FirstName = model.FirstName;
+            resume.User.LastName = model.LastName;
+            resume.User.DateOfBirth = model.DateOfBirth;
+            resume.User.PhoneNumber = model.PhoneNumber;
+            resume.User.Email = model.Email;
+            resume.User.Address = model.Address;
+            resume.User.Summary = this.sanitizer.Sanitize(model.Summary);
+            resume.User.RepoProfile = model.RepoProfile;
+
+            
+            //Check if update User table corespondingly!!!!!!!!!!!
+            this.userRepo.Update(resume.User);
+
+            await this.userRepo.SaveChangesAsync();
+        }
+
+        public async Task DeletePicture(string userName)
+        {
             var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
 
-            user.ResumeId = resume.Id;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.DateOfBirth = model.DateOfBirth;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Email = model.Email;
-            user.Address = model.Address;
-            user.Summary = model.Summary;
-            user.Picture = pictrueUrl;
-            user.RepoProfile = model.RepoProfile;
+            if (user.Picture != null)
+            {
+                this.cloudinaryService.DeleteCloudinaryImg(user.CloudinaryPublicId);
+            }
 
-            File.Delete(filePath);
+            user.Picture = null;
+            user.CloudinaryPublicId = null;
 
             this.userRepo.Update(user);
 
-            await this.userRepo.SaveChangesAsync();
+           await this.userRepo.SaveChangesAsync();
+        }
+
+        //Remove html tags when displaying summary
+        private string StripHtml(string source)
+        {
+            string output;
+
+            //get rid of HTML tags
+            output = Regex.Replace(source, "<[^>]*>", string.Empty);
+
+            //get rid of multiple blank lines
+            output = Regex.Replace(output, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+
+            return HttpUtility.HtmlDecode(output);
         }
     }
 }

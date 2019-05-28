@@ -1,65 +1,58 @@
 ﻿@model CVApp.ViewModels.PersonalInfo.PersonalInfoOutViewModel
+@{ 
+    var name = "";
+}
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8 offset-2">
+        <div>
             <h2>Personal Information</h2>
             <hr />
-
-            <form method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="FirstName">First name</label>
-                        <input asp-for="FirstName" class="form-control" value="@Model.FirstName" readonly>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="LastName">Last name</label>
-                        <input asp-for="LastName" class="form-control" value="@Model.LastName" readonly>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Email">Email</label>
-                        <input asp-for="Email" class="form-control" value="@Model.Email" readonly>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="PhoneNumber">Phone Number</label>
-                        <input asp-for="PhoneNumber" class="form-control" value="@Model.PhoneNumber" readonly>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label asp-for="DateOfBirth">Date of birth</label>
-                        <input asp-for="DateOfBirth" class="form-control" value="@Model.DateOfBirth" readonly>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label asp-for="Picture">Picture</label>
-                        <input asp-for="Picture" class="form-control" value="@Model.Picture" readonly>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label asp-for="RepoProfile">Portfolio</label>
-                        <input asp-for="RepoProfile" class="form-control" value="@Model.RepoProfile" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Address">Address</label>
-                    <input asp-for="Address" class="form-control" value="@Model.Address" readonly>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Summary">Summary</label>
-                    <textarea id="mytextarea" asp-for="Summary" class="form-control" rows="5" value="@Model.Summary" readonly></textarea>
-                </div>
-                <div class="row justify-content-between">
-                    <div class="col-md-6">
-                        <a asp-controller="PersonalInfoController" asp-action="Edit" class="btn btn-primary" role="button" aria-pressed="true">Edit</a>
+        </div>
+        <div class="row">
+            <div>
+                <div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-5">
+                                    <div class="about-img">
+                                        <img src="@Model.Picture" class="img-fluid rounded b-shadow-a" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-7">
+                                    <div class="about-info">
+                                        @{name = Model.FirstName + " " + Model.LastName;}
+                                        <p><b>Name: </b> <span>@name</span></p>
+                                        <p><b>Date of birth: </b> <span>@Model.DateOfBirth</span></p>
+                                        <p><b>Email: </b> <span>@Model.Email</span></p>
+                                        <p><b>Phone: </b> <span>@Model.PhoneNumber</span></p>
+                                        <p><b>Address: </b> <span>@Model.Address</span></p>
+                                        <p><a href="@Model.RepoProfile">View my portfolio</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="about-me pt-4 pt-md-0">
+                                <div class="title-box-2">
+                                    <h5 class="title-left">
+                                        About me
+                                    </h5>
+                                </div>
+                                <p class="lead">
+                                    @Html.Raw(Model.Summary)
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </form>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-md-6">
+                <a asp-controller="PersonalInfo" asp-action="Edit" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+            </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>tinymce.init({ selector: '#mytextarea' });</script>
-}

@@ -11,10 +11,10 @@ namespace CVApp.Common.Services
     {
         Task SaveFormData(PersonalInfoViewModel model, string userName);
 
-        PersonalInfoOutViewModel GetFormToEditOrDelete(string userIdentifier);
+        PersonalInfoOutViewModel DisplayForm(string userName);
 
-        Task EditForm(PersonalInfoViewModel model);
+        PersonalInfoViewModel EditForm(string userName);
 
-        Task MarkFormAsDeleted(PersonalInfoViewModel model);
+        Task DeletePicture(string userName);
     }
 }

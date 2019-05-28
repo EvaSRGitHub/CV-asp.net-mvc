@@ -68,6 +68,7 @@ namespace CVApp.Web
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ISanitizer, HtmlSanitizerAdapter>();
             services.AddScoped<IPersonalInfoService, PersonalInfoService>();

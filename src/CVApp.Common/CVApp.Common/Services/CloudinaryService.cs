@@ -11,23 +11,30 @@ namespace CVApp.Common.Services
     public class CloudinaryService:ICloudinaryService
     {
         private IServiceProvider serviceProvider;
+        private IConfiguration configuration;
+
+        private readonly string cloudName;
+        private readonly string apiKey; 
+        private readonly string apiSecret;
+
+        private Account account;
+        private Cloudinary cloudinary; 
+
         public CloudinaryService(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+            this.configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            this.cloudName = this.configuration["Cloudinary:cloud_name"];
+            this.apiKey = this.configuration["Cloudinary:api_key"];
+            this.apiSecret = this.configuration["Cloudinary:api_secret"];
+            this.account = new Account(cloudName, apiKey, apiSecret);
+            this.cloudinary = new Cloudinary(account);
         }
 
+        public string PublicId { get; private set; }
         public string Upload(string filePath)
         { 
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
-            var cloudName = configuration["Cloudinary:cloud_name"];
-            var apiKey = configuration["Cloudinary:api_key"];
-            var apiSecret = configuration["Cloudinary:api_secret"];
-
-            Account account = new Account(cloudName, apiKey, apiSecret);
-
-            Cloudinary cloudinary = new Cloudinary(account);
-
+           
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(filePath)
@@ -46,7 +53,24 @@ namespace CVApp.Common.Services
 
             var uploadLink = uploadResult.SecureUri.ToString();
 
+            this.PublicId = uploadResult.PublicId;
+
             return uploadLink;
+        }
+
+        public string DeleteCloudinaryImg(string publicId)
+        {
+            //public DelResResult DeleteResources(DelResParams parameters);
+
+            var delParams = new DelResParams()
+            {
+                PublicIds = new List<string>() { publicId },
+                Invalidate = true
+            };
+
+            var delResult = cloudinary.DeleteResources(delParams);
+
+            return null;
         }
 
     }

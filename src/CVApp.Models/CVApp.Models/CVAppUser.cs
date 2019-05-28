@@ -23,6 +23,8 @@ namespace CVApp.Models
 
         public string Picture { get; set; }
 
+        public string CloudinaryPublicId { get; set; }
+
         public string RepoProfile { get; set; }
 
         public Resume Resume { get; set; }
