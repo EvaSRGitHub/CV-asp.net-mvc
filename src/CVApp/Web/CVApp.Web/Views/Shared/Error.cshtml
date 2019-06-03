@@ -7,6 +7,16 @@
         <h1 class="text-danger">Error.</h1>
         <h2 class="text-danger">An error occurred while processing your request.</h2>
 
+        @if(ViewData["ModelErrors"] != null)
+        {
+            <ul>
+               
+                @foreach (var item in ViewData["ModelErrors"] as List<string>)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+        }
         @if (ViewData["Error"] != null)
         {
             <h3>@ViewData["Error"]</h3>

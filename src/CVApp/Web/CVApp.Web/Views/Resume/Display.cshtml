@@ -1,0 +1,60 @@
+﻿@model CVApp.ViewModels.Resume.ResumeDisplayViewModel
+@{
+    var name = "";
+}
+
+<div class="container">
+    <div class="col-md-12">
+        <h1 class="text-center">Resume</h1>
+        <hr />
+    </div>
+    <!--Personal Info-->
+    <div class="row">
+        <div>
+            <h2>Personal Info</h2>
+            <hr />
+        </div>
+        <div class="row">
+            <div>
+                <div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-5">
+                                    <div class="about-img">
+                                        <img src="@Model.PersonalInfo.Picture" class="img-fluid rounded b-shadow-a" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-7">
+                                    <div class="about-info">
+                                        @{name = Model.PersonalInfo.FirstName + " " + Model.PersonalInfo.LastName;}
+                                        <p><b>Name: </b> <span>@name</span></p>
+                                        <p><b>Date of birth: </b> <span>@Model.PersonalInfo.DateOfBirth</span></p>
+                                        <p><b>Email: </b> <span>@Model.PersonalInfo.Email</span></p>
+                                        <p><b>Phone: </b> <span>@Model.PersonalInfo.PhoneNumber</span></p>
+                                        <p><b>Address: </b> <span>@Model.PersonalInfo.Address</span></p>
+                                        <p><a href="@Model.PersonalInfo.RepoProfile">View my portfolio</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="about-me pt-4 pt-md-0">
+                                <div class="title-box-2">
+                                    <h5 class="title-left">
+                                        About me
+                                    </h5>
+                                </div>
+                                <p class="lead">
+                                    @Html.Raw(Model.PersonalInfo.Summary)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <!--Education-->
+</div>

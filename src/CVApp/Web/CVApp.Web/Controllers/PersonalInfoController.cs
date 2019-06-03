@@ -50,7 +50,17 @@ namespace CVApp.Web.Controllers
         {
             var currentUser = this.User.Identity.Name;
 
-            var model = this.personalInfoService.DisplayForm(currentUser);
+            PersonalInfoOutViewModel model;
+
+            try
+            {
+                model = this.personalInfoService.DisplayForm(currentUser);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+                return this.View("Error");
+            }
 
             return this.View(model);
         }
@@ -60,12 +70,22 @@ namespace CVApp.Web.Controllers
         {
             var currentUser = this.User.Identity.Name;
 
-            var model = this.personalInfoService.EditForm(currentUser);
+            PersonalInfoViewModel model;
 
+            try
+            {
+                model = this.personalInfoService.EditForm(currentUser);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+                return this.View("Error");
+            }
+           
             return this.View(model);
         }
 
-       
+       [HttpPost]
         public async Task<IActionResult> DeletePicture()
         {
             var userName = this.User.Identity.Name;
@@ -82,7 +102,5 @@ namespace CVApp.Web.Controllers
 
             return Json(new { Result = "OK" });
         }
-
-
     }
 }

@@ -110,7 +110,7 @@ namespace CVApp.Common.Services
 
                 if (!Uri.IsWellFormedUriString(pictureUrl, UriKind.Absolute))
                 {
-                    //TODO - Error View
+                    throw new InvalidOperationException("Something went wrong. Please try again later.");
                 }
 
                 if(resume.User.Picture != null)
@@ -134,8 +134,6 @@ namespace CVApp.Common.Services
             resume.User.Summary = this.sanitizer.Sanitize(model.Summary);
             resume.User.RepoProfile = model.RepoProfile;
 
-            
-            //Check if update User table corespondingly!!!!!!!!!!!
             this.userRepo.Update(resume.User);
 
             await this.userRepo.SaveChangesAsync();
@@ -143,7 +141,7 @@ namespace CVApp.Common.Services
 
         public async Task DeletePicture(string userName)
         {
-            var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName);
 
             if (user.Picture != null)
             {

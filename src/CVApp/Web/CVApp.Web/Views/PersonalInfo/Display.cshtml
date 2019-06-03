@@ -3,56 +3,56 @@
     var name = "";
 }
 
-<div class="container">
-    <div class="row">
-        <div>
-            <h2>Personal Information</h2>
-            <hr />
-        </div>
+    <div class="container">
         <div class="row">
             <div>
+                <h2>Personal Information</h2>
+                <hr />
+            </div>
+            <div class="row">
                 <div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-sm-6 col-md-5">
-                                    <div class="about-img">
-                                        <img src="@Model.Picture" class="img-fluid rounded b-shadow-a" alt="">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-5">
+                                        <div class="about-img">
+                                            <img src="@Model.Picture" class="img-fluid rounded b-shadow-a" alt="">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <div class="about-info">
-                                        @{name = Model.FirstName + " " + Model.LastName;}
-                                        <p><b>Name: </b> <span>@name</span></p>
-                                        <p><b>Date of birth: </b> <span>@Model.DateOfBirth</span></p>
-                                        <p><b>Email: </b> <span>@Model.Email</span></p>
-                                        <p><b>Phone: </b> <span>@Model.PhoneNumber</span></p>
-                                        <p><b>Address: </b> <span>@Model.Address</span></p>
-                                        <p><a href="@Model.RepoProfile">View my portfolio</a></p>
+                                    <div class="col-sm-6 col-md-7">
+                                        <div class="about-info">
+                                            @{name = Model.FirstName + " " + Model.LastName;}
+                                            <p><b>Name: </b> <span>@name</span></p>
+                                            <p><b>Date of birth: </b> <span>@Model.DateOfBirth</span></p>
+                                            <p><b>Email: </b> <span>@Model.Email</span></p>
+                                            <p><b>Phone: </b> <span>@Model.PhoneNumber</span></p>
+                                            <p><b>Address: </b> <span>@Model.Address</span></p>
+                                            <p><a href="@Model.RepoProfile">View my portfolio</a></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="about-me pt-4 pt-md-0">
-                                <div class="title-box-2">
-                                    <h5 class="title-left">
-                                        About me
-                                    </h5>
+                            <div class="col-md-6">
+                                <div class="about-me pt-4 pt-md-0">
+                                    <div class="title-box-2">
+                                        <h5 class="title-left">
+                                            About me
+                                        </h5>
+                                    </div>
+                                    <p class="lead">
+                                        @Html.Raw(Model.Summary)
+                                    </p>
                                 </div>
-                                <p class="lead">
-                                    @Html.Raw(Model.Summary)
-                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row justify-content-between">
+        <div class="row">
             <div class="col-md-6">
                 <a asp-controller="PersonalInfo" asp-action="Edit" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
             </div>
         </div>
     </div>
-</div>
