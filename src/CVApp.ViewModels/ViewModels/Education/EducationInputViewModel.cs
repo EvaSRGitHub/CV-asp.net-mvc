@@ -20,7 +20,7 @@ namespace CVApp.ViewModels.Education
         public DateTime ToYear { get; set; }
 
         [Required]
-        [RegularExpression("^[\\d]+$", ErrorMessage = "The GPA field must be number.")]
+        [RegularExpression(@"^[\d.]+$", ErrorMessage = "The GPA field must be number.")]
         public double GPA { get; set; }
 
         [Required]

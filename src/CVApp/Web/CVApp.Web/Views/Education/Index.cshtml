@@ -5,7 +5,7 @@
         <div class="col-md-8 offset-2">
             <h2>Education</h2>
             <hr />
-            <form method="post">
+            <form method="post" id="educationForm">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-element">
                     <div class="form-group">
@@ -14,15 +14,30 @@
                         <span asp-validation-for="EducationList[0].Institution" class="text-danger"></span>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label asp-for="EducationList[0].FromYear">Start year</label>
-                            <input asp-for="EducationList[0].FromYear" type="date" class="form-control" placeholder="Year of enrolment">
-                            <span asp-validation-for="EducationList[0].FromYear" class="text-danger"></span>
+                        <div class='col-md-4'>
+                            <!--DatePicker from Tempus Dominus-->
+                            <div class="form-group">
+                                <label asp-for="EducationList[0].FromYear">Start year</label>
+                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                                    <input asp-for="EducationList[0].FromYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" placeholder="Year of enrolment" />
+                                    <span asp-validation-for="EducationList[0].FromYear" class="text-danger"></span>
+                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="EducationList[0].ToYear">End year</label>
-                            <input asp-for="EducationList[0].ToYear" type="date" class="form-control" placeholder="Year of graduation">
-                            <span asp-validation-for="EducationList[0].ToYear" class="text-danger"></span>
+                        <div class='col-md-4'>
+                            <div class="form-group">
+                                <label asp-for="EducationList[0].ToYear">End year</label>
+                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                                    <input asp-for="EducationList[0].ToYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" placeholder="Year of graduation" />
+                                    <span asp-validation-for="EducationList[0].ToYear" class="text-danger"></span>
+                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-4">
                             <label asp-for="EducationList[0].GPA">GPA</label>
@@ -53,10 +68,9 @@
                 <a href="javascript:void(0);" class="addFormElements" style="font-size:2em">+</a>
 
                 <div class="educationContainer">
-
                 </div>
-                <div class="row">
-                    <div class="col-auto mr-auto">
+                <div class="row justify-content-end">
+                    <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
@@ -67,68 +81,88 @@
 
 @section Scripts {
     <script>
+
+        $(function () {
+            $('#datetimepicker7').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY'
+            });
+            $('#datetimepicker8').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY',
+                useCurrent: false
+            });
+            $("#datetimepicker7").on("change.datetimepicker", function (e) {
+                $('#datetimepicker8').datetimepicker('minDate', e.date);
+            });
+            $("#datetimepicker8").on("change.datetimepicker", function (e) {
+                $('#datetimepicker7').datetimepicker('maxDate', e.date);
+            });
+        });
+
         $(document).ready(function () {
+
             let i = 1;
 
             $('.addFormElements').click(function () {
 
-                let $formElement = $('<div class="form-element">');
+                let $formElement = $('<div class="form-element"></div>');
                 let value = "";
 
-                let $institutionDiv = $('<div class="form-group"><label for="EducationList['+ i +'].Institution">Instituti on Name</label></div>');
-                let $institutionInput = $('<input name="EducationList['+ i +'].Institution" class="form-control" placeholder="Name of educational institution">');
-                let $institutionValidation = $('<span data-valmsg-for="EducationList['+ i +'].Institution" class="text-danger field-validation-valid" data-valmsg-replace="true"></span>');
+                let $institutionDiv = $('<div class="form-group"><label for="EducationList[' + i + '].Institution">Institution Name</label></div>');
+                let $institutionInput = $('<input name="EducationList[' + i + '].Institution" class="form-control added" placeholder="Name of educational institution">');
+                let $institutionValidation = $('<span data-valmsg-for="EducationList[' + i + '].Institution" class="text-danger field-validation-valid" data-valmsg-replace="true"></span>');
                 $institutionDiv.append($institutionInput);
                 $institutionDiv.append($institutionValidation);
                 $formElement.append($institutionDiv);
 
                 let $periodAndGpaDiv = $('<div class= "form-row"></div>');
-                let $fromYearLabel = $('<div class="form-group col-md-4"><label for="EducationList['+ i +'].FromYear">Start year</label></div>');
-                let $fromYearInput = $('<input name="EducationList['+ i +'].FromYear" type = "date" class="form-control" placeholder = "Year of enrolment">');
-                let $fromYearValidation = $('<span for="EducationList['+ i +'].FromYear" class="text-danger" ></span>');
+                let $fromYearLabel = $('<div class="form-group col-md-4"><label for="EducationList[' + i + '].FromYear">Start year</label></div>');
+                let $fromYearInput = $('<input name="EducationList[' + i + '].FromYear" type = "date" class="form-control added" placeholder = "Year of enrolment">');
+                let $fromYearValidation = $('<span for="EducationList[' + i + '].FromYear" class="text-danger" ></span>');
                 $fromYearLabel.append($fromYearInput);
                 $fromYearLabel.append($fromYearValidation);
                 $periodAndGpaDiv.append($fromYearLabel);
 
-                let $toYearLabel = $('<div class="form-group col-md-4"> <label for="EducationList['+ i +'].ToYear">End year</label></div>');
-                let $toYearInput = $('<input name="EducationList['+ i +'].ToYear" type = "date" class="form-control" placeholder = "Year of graduation">');
-                let $toYearValidation = $('<span for="EducationList['+ i +'].ToYear" class="text-danger" ></span>');
+                let $toYearLabel = $('<div class="form-group col-md-4"> <label for="EducationList[' + i + '].ToYear">End year</label></div>');
+                let $toYearInput = $('<input name="EducationList[' + i + '].ToYear" type = "date" class="form-control added" placeholder = "Year of graduation">');
+                let $toYearValidation = $('<span for="EducationList[' + i + '].ToYear" class="text-danger" ></span>');
                 $toYearLabel.append($toYearInput);
                 $toYearLabel.append($toYearValidation);
                 $periodAndGpaDiv.append($toYearLabel);
 
-                let $gpaLabel = $('<div class="form-group col-md-4"><label for="EducationList['+ i +'].GPA">GPA</label></div>');
-                let $gpaInput = $('<input name="EducationList['+ i +'].GPA" class="form-control" placeholder = "GPA 5.20">');
-                let $gpaValidation = $('<span for="EducationList['+ i +'].GPA" class="text-danger"></span >');
+                let $gpaLabel = $('<div class="form-group col-md-4"><label for="EducationList[' + i + '].GPA">GPA</label></div>');
+                let $gpaInput = $('<input name="EducationList[' + i + '].GPA" class="form-control added" placeholder = "GPA 5.20">');
+                let $gpaValidation = $('<span for="EducationList[' + i + '].GPA" class="text-danger"></span >');
                 $gpaLabel.append($gpaInput);
                 $gpaLabel.append($gpaValidation);
                 $periodAndGpaDiv.append($gpaLabel);
                 $formElement.append($periodAndGpaDiv);
 
-                let $diplomaDiv = $('<div class="form-group"><label for="EducationList['+ i +'].Diploma">Diploma Title</label></div>');
-                let $diplomaInput = $('<input name="EducationList['+ i +'].Diploma" class="form-control" placeholder = "Master of Law">');
-                let $diplomaValidation = $('<span for="EducationLis['+ i +'].Diploma" class="text-danger" ></span>');
+                let $diplomaDiv = $('<div class="form-group"><label for="EducationList[' + i + '].Diploma">Diploma Title</label></div>');
+                let $diplomaInput = $('<input name="EducationList[' + i + '].Diploma" class="form-control added" placeholder = "Master of Law">');
+                let $diplomaValidation = $('<span for="EducationLis[' + i + '].Diploma" class="text-danger" ></span>');
                 $diplomaDiv.append($diplomaInput);
                 $diplomaDiv.append($diplomaValidation);
                 $formElement.append($diplomaDiv);
 
                 let $cityAndCountryDiv = $('<div class="form-row">');
-                let $cityLabel = $('<div class="form-group col-md-6"><label for="EducationList['+ i +'].City">City</label></div > ');
-                let $cityInput = $('<input name="EducationList['+ i +'].City" class="form-control" placeholder = "London">');
+                let $cityLabel = $('<div class="form-group col-md-6"><label for="EducationList[' + i + '].City">City</label></div > ');
+                let $cityInput = $('<input name="EducationList[' + i + '].City" class="form-control added" placeholder = "London">');
                 let $cityValidation = $('<span for="EducationList[' + i + '].City" class="text-danger" ></span >');
                 $cityLabel.append($cityInput);
                 $cityLabel.append($cityValidation);
                 $cityAndCountryDiv.append($cityLabel);
 
-                let $countryLabel = $('<div class="form-group col-md-6"><label for="EducationList['+ i +'].Country">Country</label></div>');
-                let $countyrInput = $('<input name="EducationList['+ i +'].Country" class="form-control" placeholder = "England">');
-                let $countryValidation = $('<span for="EducationList['+ i +'].Country" class="text-danger"></span><hr />');
+                let $countryLabel = $('<div class="form-group col-md-6"><label for="EducationList[' + i + '].Country">Country</label></div>');
+                let $countyrInput = $('<input name="EducationList[' + i + '].Country" class="form-control added" placeholder = "England">');
+                let $countryValidation = $('<span for="EducationList[' + i + '].Country" class="text-danger"></span>');
                 $countryLabel.append($countyrInput);
                 $countryLabel.append($countryValidation);
                 $cityAndCountryDiv.append($countryLabel);
                 $formElement.append($cityAndCountryDiv);
 
-                //Seems to work without this. 
+                //Seems to work without this.
                 //$institutionInput.val(value);
                 //$fromYearInput.val(value);
                 //$toYearInput.val(value);
@@ -137,12 +171,38 @@
                 //$countyrInput.val(value);
                 //$gpaInput.val(value);
 
+                let $removeBtn = $('<input type="button" id="remove" class="btn btn-secondary mb-2" onclick="RemoveForm(this)" value="Remove"><hr />');
+                $formElement.append($removeBtn);
+
                 $('.educationContainer').append($formElement);
-                 i++;
+                i++;
             });
-           
+
+            // set validation on dynamically added inputs; Could't change collor to label.error to red!
+            $('#educationForm').on('submit', function (event) {
+                if ($('input.form-control.added').length != 0) {
+                    // adding rules for inputs with class 'form-control.added'
+                $('input.form-control.added').each(function () {
+                    $(this).rules("add",
+                        {
+                            required: true
+                        })
+                });
+
+                // prevent default submit action
+                event.preventDefault();
+                }
+                
+            })
+
+            // initialize the validator
+            $("#educationForm").validate();
+
         });
 
+        function RemoveForm() {
+            $('#remove').parent().remove();
+        }
     </script>
     <partial name="_ValidationScriptsPartial" />
 }
