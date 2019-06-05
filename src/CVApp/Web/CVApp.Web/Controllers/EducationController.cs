@@ -29,7 +29,7 @@ namespace CVApp.Web.Controllers
                 return View("Error");
             }
             //TODO - rediredt to Resume/Display
-           return Redirect("/");
+           return Redirect("Resume/Display");
         }
              
     }
