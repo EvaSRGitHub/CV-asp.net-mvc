@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace CVApp.Data
 {
-    public class Repository<TEntity> : IRepository<TEntity>, IDisposable
+    public class Repository<TEntity> : IRepository<TEntity>
+        //, IDisposable
         where TEntity: class
     {
         private readonly CVAppDbContext db;
@@ -29,10 +30,10 @@ namespace CVApp.Data
             this.dbset.Remove(entity);
         }
 
-        public void Dispose()
-        {
-            this.db.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    this.db.Dispose();
+        //}
 
         public Task<int> SaveChangesAsync()
         {
@@ -55,7 +56,6 @@ namespace CVApp.Data
         {
             return this.dbset.AddAsync(entity);
         }
-
         public Task<TEntity> GetByIdAsync(params object[] id)
         {
             return this.dbset.FindAsync(id);

@@ -9,10 +9,12 @@
         <hr />
     </div>
     <!--Personal Info-->
-    <div class="row">
-        <div>
-            <h2>Personal Info</h2>
-            <hr />
+    <div class="personalInfo">
+        <div class="row">
+            <div>
+                <h2>Personal Info</h2>
+                <hr />
+            </div>
         </div>
         <div class="row">
             <div>
@@ -51,10 +53,44 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a asp-controller="PersonalInfo" asp-action="Edit" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                        </div>
                 </div>
             </div>
         </div>
     </div>
     <hr />
     <!--Education-->
+    <div class="education">
+        <div class="row">
+            <div>
+                <h2>Education</h2>
+                <hr />
+            </div>
+        </div>
+
+        @foreach (var item in Model.Educations)
+        {
+        <div class="row">
+            <div class="col-12">
+                <h4>@item.Institution - @item.Country, @item.City <small class="text-muted"><em>(@item.FromYear - @item.ToYear)</em></small></h4>
+                <h5>@item.Diploma (GPA - @item.GPA)</h5>
+                <div>@Html.Raw(item.MainSubjects)</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                    </div>
+                    <div class="col-md-auto">
+                        <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        </div>
+        }
+    </div>
+    <!--Work-->
+
 </div>

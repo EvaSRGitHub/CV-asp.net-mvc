@@ -1,5 +1,6 @@
 ﻿using CVApp.Common.Repository;
 using CVApp.Models;
+using CVApp.ViewModels.Education;
 using CVApp.ViewModels.PersonalInfo;
 using CVApp.ViewModels.Resume;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CVApp.Common.Services
 {
@@ -36,28 +38,36 @@ namespace CVApp.Common.Services
 
                 await this.resumeRepo.AddAsync(resume);
 
-                await this.resumeRepo.SaveChangesAsync();
+                try
+                {
+                    await this.resumeRepo.SaveChangesAsync();
 
-                var user = await this.userRepo.GetByIdAsync(userId);
+                    var user = await this.userRepo.GetByIdAsync(userId);
 
-                user.ResumeId = resume.Id;
+                    user.ResumeId = resume.Id;
 
-                this.userRepo.Update(user);
+                    this.userRepo.Update(user);
 
-                await this.userRepo.SaveChangesAsync();
+                    await this.userRepo.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+
             }
         }
 
         public ResumeDisplayViewModel DisplayResume(string userName)
         {
             if (string.IsNullOrEmpty(userName))
-            {   
+            {
                 throw new InvalidOperationException("Something went wrong.Please try again later.");
             }
 
-            var resume = this.resumeRepo.All().Include("User").AsNoTracking().SingleOrDefault(u => u.User.UserName == userName);
+            var resume = this.resumeRepo.All().Include("User").Include("Education").AsNoTracking().SingleOrDefault(u => u.User.UserName == userName);
 
-            if(resume == null)
+            if (resume == null)
             {
                 throw new NullReferenceException("Something went wrong.Please try again later.");
             }
@@ -66,23 +76,55 @@ namespace CVApp.Common.Services
 
             var personalInfo = new PersonalInfoOutViewModel();
 
-            if(resume.User != null)
+            if (resume.User != null)
             {
-                personalInfo.Address = resume.User.Address;
-                personalInfo.Picture = resume.User.Picture;
-                personalInfo.FirstName = resume.User.FirstName;
-                personalInfo.LastName = resume.User.LastName;
-                personalInfo.Email = resume.User.Email;
-                personalInfo.PhoneNumber = resume.User.PhoneNumber;
-                personalInfo.DateOfBirth = resume.User.DateOfBirth.Value.ToShortDateString();
-                personalInfo.RepoProfile = resume.User.RepoProfile;
-                personalInfo.Summary = resume.User.Summary;
+                personalInfo = CreatePersonalInvoDisplayVM(resume);
             }
 
-            
             model.PersonalInfo = personalInfo;
 
+            var educationCollection = new List<EducationOutViewModel>();
+
+            if (resume.Education.Count() > 0)
+            {
+                educationCollection = CreateEducationDisplayVM(resume);
+            }
+
+            model.Educations = educationCollection;
+
             return model;
+        }
+
+        private List<EducationOutViewModel> CreateEducationDisplayVM(Resume resume)
+        {
+            return resume.Education.Select(e => new EducationOutViewModel
+            {
+                Institution = HttpUtility.HtmlDecode(e.Institution),
+                FromYear = e.FromYear.ToString("MM/yyyy"),
+                ToYear = e.ToYear.ToString("MM/yyyy"),
+                GPA = e.GPA,
+                MainSubjects = HttpUtility.HtmlDecode(e.MainSubjects),
+                Diploma = HttpUtility.HtmlDecode(e.Diploma),
+                City = e.City,
+                Country = e.Country,
+                EducationId = e.Id
+            }).OrderByDescending(x => x.FromYear).ThenByDescending(x => x.ToYear).ToList();
+        }
+
+        private PersonalInfoOutViewModel CreatePersonalInvoDisplayVM(Resume resume)
+        {
+            return new PersonalInfoOutViewModel()
+            {
+                Address = resume.User.Address,
+                Picture = resume.User.Picture,
+                FirstName = resume.User.FirstName,
+                LastName = resume.User.LastName,
+                Email = resume.User.Email,
+                PhoneNumber = resume.User.PhoneNumber,
+                DateOfBirth = resume.User.DateOfBirth.Value.ToShortDateString(),
+                RepoProfile = resume.User.RepoProfile,
+                Summary = HttpUtility.HtmlDecode(resume.User.Summary),
+            };
         }
     }
 }

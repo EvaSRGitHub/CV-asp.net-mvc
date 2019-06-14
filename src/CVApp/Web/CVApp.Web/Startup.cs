@@ -75,6 +75,8 @@ namespace CVApp.Web
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IStartService, StartService>();
             services.AddScoped<IResumeService, ResumeService>();
+            services.AddScoped<IEducationService, EducationService>();
+
             services.AddLogging();
         }
 

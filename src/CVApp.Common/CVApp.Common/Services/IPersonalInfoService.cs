@@ -11,8 +11,6 @@ namespace CVApp.Common.Services
     {
         Task SaveFormData(PersonalInfoViewModel model, string userName);
 
-        PersonalInfoOutViewModel DisplayForm(string userName);
-
         PersonalInfoViewModel EditForm(string userName);
 
         Task DeletePicture(string userName);

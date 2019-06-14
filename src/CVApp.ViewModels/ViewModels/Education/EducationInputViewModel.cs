@@ -24,10 +24,16 @@ namespace CVApp.ViewModels.Education
         public double GPA { get; set; }
 
         [Required]
+        public string MainSubjects { get; set; }
+
+        [Required]
         public string City { get; set; }
 
         [Required]
         public string Country { get; set; }
+
+        [Required]
+        public string Region { get; set; }
 
         [Required]
         public int ResumeId { get; set; }

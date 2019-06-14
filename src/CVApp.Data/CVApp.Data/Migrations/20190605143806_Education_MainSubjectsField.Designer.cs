@@ -4,14 +4,16 @@ using CVApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CVApp.Data.Migrations
 {
     [DbContext(typeof(CVAppDbContext))]
-    partial class CVAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190605143806_Education_MainSubjectsField")]
+    partial class Education_MainSubjectsField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,9 +142,6 @@ namespace CVApp.Data.Migrations
                         .IsRequired();
 
                     b.Property<string>("MainSubjects")
-                        .IsRequired();
-
-                    b.Property<string>("Region")
                         .IsRequired();
 
                     b.Property<int>("ResumeId");

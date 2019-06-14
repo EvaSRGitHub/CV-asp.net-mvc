@@ -58,9 +58,9 @@
                     <input asp-for="Address" class="form-control" placeholder="12 Downing Str, London, England">
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="padding: 1px;">
                     <label asp-for="Summary">Summary</label>
-                    <textarea id="mytextarea" asp-for="Summary" class="form-control" rows="5" placeholder="Brief nerrative about yourself"></textarea>
+                    <textarea id="mytextarea" asp-for="Summary" class="form-control myTextarea" rows="5" placeholder="Brief nerrative about yourself"></textarea>
                     <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
                 <div class="row">
@@ -74,6 +74,10 @@
 </div>
 
 @section Scripts {
-    <script>tinymce.init({ selector: '#mytextarea' });</script>
+   <script>
+       $(document).ready(function () {
+           InitTinymce();
+       });
+    </script>
     <partial name="_ValidationScriptsPartial" />
 }

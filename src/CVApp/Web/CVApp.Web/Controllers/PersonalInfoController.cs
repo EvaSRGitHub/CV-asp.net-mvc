@@ -43,28 +43,27 @@ namespace CVApp.Web.Controllers
                 ViewData["Error"] = e.Message;
                 return this.View("Error");
             }
-            return RedirectToAction("Display");
+            return RedirectToAction("Display", "Resume");
         }
 
-        public IActionResult Display()
-        {
-            var currentUser = this.User.Identity.Name;
+        //public IActionResult Display()
+        //{
+        //    var currentUser = this.User.Identity.Name;
 
-            PersonalInfoOutViewModel model;
+        //    PersonalInfoOutViewModel model;
 
-            try
-            {
-                model = this.personalInfoService.DisplayForm(currentUser);
-            }
-            catch (Exception e)
-            {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
-            }
+        //    try
+        //    {
+        //        model = this.personalInfoService.DisplayForm(currentUser);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        ViewData["Error"] = e.Message;
+        //        return this.View("Error");
+        //    }
 
-            return this.View(model);
-        }
-
+        //    return this.View(model);
+        //}
       
         public IActionResult Edit()
         {

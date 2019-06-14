@@ -27,7 +27,6 @@ namespace CVApp.Common.Services
         private readonly ISanitizer sanitizer;
         private readonly ICloudinaryService cloudinaryService;
         private readonly IHostingEnvironment environment;
-       // private readonly IMapper mapper;
 
         public PersonalInfoService(ILogger<PersonalInfoService> logger, IRepository<CVAppUser> userRepo, IRepository<Resume> resumeRepo, ISanitizer sanitizer, ICloudinaryService cloudinaryService, IHostingEnvironment environment)
         {
@@ -55,27 +54,7 @@ namespace CVApp.Common.Services
                 CurrentPicture = user.Picture,
                 Address = user.Address,
                 RepoProfile = user.RepoProfile,
-                Summary = this.StripHtml(user.Summary)
-            };
-
-            return model;
-        }
-
-        public PersonalInfoOutViewModel DisplayForm(string userName)
-        {
-            var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
-
-            var model = new PersonalInfoOutViewModel
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.Value.ToString("MM/dd/yyyy"),
-                Address = user.Address,
-                PhoneNumber = user.PhoneNumber,
-                Picture = user.Picture,
-                Email = user.Email,
-                RepoProfile = user.RepoProfile,
-                Summary = HttpUtility.HtmlDecode(user.Summary)
+                Summary = user.Summary
             };
 
             return model;
@@ -125,14 +104,14 @@ namespace CVApp.Common.Services
             }
 
             resume.User.ResumeId = resume.Id;
-            resume.User.FirstName = model.FirstName;
-            resume.User.LastName = model.LastName;
+            resume.User.FirstName = this.sanitizer.Sanitize(model.FirstName);
+            resume.User.LastName = this.sanitizer.Sanitize(model.LastName);
             resume.User.DateOfBirth = model.DateOfBirth;
-            resume.User.PhoneNumber = model.PhoneNumber;
-            resume.User.Email = model.Email;
-            resume.User.Address = model.Address;
+            resume.User.PhoneNumber = this.sanitizer.Sanitize(model.PhoneNumber);
+            resume.User.Email = this.sanitizer.Sanitize(model.Email);
+            resume.User.Address = this.sanitizer.Sanitize(model.Address);
             resume.User.Summary = this.sanitizer.Sanitize(model.Summary);
-            resume.User.RepoProfile = model.RepoProfile;
+            resume.User.RepoProfile = this.sanitizer.Sanitize(model.RepoProfile);
 
             this.userRepo.Update(resume.User);
 
@@ -154,20 +133,6 @@ namespace CVApp.Common.Services
             this.userRepo.Update(user);
 
            await this.userRepo.SaveChangesAsync();
-        }
-
-        //Remove html tags when displaying summary
-        private string StripHtml(string source)
-        {
-            string output;
-
-            //get rid of HTML tags
-            output = Regex.Replace(source, "<[^>]*>", string.Empty);
-
-            //get rid of multiple blank lines
-            output = Regex.Replace(output, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
-
-            return HttpUtility.HtmlDecode(output);
         }
     }
 }

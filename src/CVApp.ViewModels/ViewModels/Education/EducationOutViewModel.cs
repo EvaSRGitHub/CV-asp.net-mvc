@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CVApp.Models
+namespace CVApp.ViewModels.Education
 {
-    public class Education:BaseModel<int>
+    public class EducationOutViewModel
     {
         [Required]
         public string Institution { get; set; }
@@ -14,10 +14,10 @@ namespace CVApp.Models
         public string Diploma { get; set; }
 
         [Required]
-        public DateTime FromYear { get; set; }
+        public string FromYear { get; set; }
 
         [Required]
-        public DateTime ToYear { get; set; }
+        public string ToYear { get; set; }
 
         [Required]
         public double GPA { get; set; }
@@ -32,11 +32,6 @@ namespace CVApp.Models
         public string Country { get; set; }
 
         [Required]
-        public string Region { get; set; }
-
-        [Required]
-        public int ResumeId { get; set; }
-
-        public Resume Resume { get; set; }
+        public int EducationId { get; set; }
     }
 }
