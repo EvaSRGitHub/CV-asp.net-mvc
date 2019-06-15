@@ -1,6 +1,7 @@
 ﻿using CVApp.Common.Repository;
 using CVApp.Models;
 using CVApp.ViewModels.Education;
+using CVApp.ViewModels.Language;
 using CVApp.ViewModels.PersonalInfo;
 using CVApp.ViewModels.Resume;
 using CVApp.ViewModels.Work;
@@ -70,6 +71,7 @@ namespace CVApp.Common.Services
                 .Include("User")
                 .Include("Education")
                 .Include("Works")
+                .Include("Languages")
                 .AsNoTracking().SingleOrDefaultAsync(u => u.User.UserName == userName);
 
             if (resume == null)
@@ -101,7 +103,26 @@ namespace CVApp.Common.Services
 
             model.Employments = workCollection;
 
+            var languageCollection = new List<LanguageOutViewModel>();
+
+            if(resume.Languages.Count() > 0)
+            {
+                languageCollection = CreateLanguageDisplayVM(resume);
+            }
+
+            model.Languages = languageCollection;
+
             return model;
+        }
+
+        private List<LanguageOutViewModel> CreateLanguageDisplayVM(Resume resume)
+        {
+            return resume.Languages.Select(l => new LanguageOutViewModel
+            {
+                Name = l.Name,
+                Level = l.Level,
+                Id = l.Id
+            }).ToList();
         }
 
         private List<WorkOutViewModel> CreateWorkDisplayVM(Resume resume)

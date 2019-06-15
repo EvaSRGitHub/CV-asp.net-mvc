@@ -1,4 +1,5 @@
 ﻿using CVApp.ViewModels.Education;
+using CVApp.ViewModels.Language;
 using CVApp.ViewModels.PersonalInfo;
 using CVApp.ViewModels.Work;
 using System;
@@ -14,5 +15,7 @@ namespace CVApp.ViewModels.Resume
         public IEnumerable<EducationOutViewModel> Educations { get; set; }
 
         public IEnumerable<WorkOutViewModel> Employments { get; set; }
+
+        public IEnumerable<LanguageOutViewModel> Languages { get; set; }
     }
 }

@@ -78,6 +78,7 @@ namespace CVApp.Web
             services.AddScoped<IResumeService, ResumeService>();
             services.AddScoped<IEducationService, EducationService>();
             services.AddScoped<IWorkService, WorkService>();
+            services.AddScoped<ILanguageService, LanguageService>();
 
             services.AddLogging();
         }

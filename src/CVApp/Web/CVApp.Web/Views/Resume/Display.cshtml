@@ -1,6 +1,18 @@
 ﻿@model CVApp.ViewModels.Resume.ResumeDisplayViewModel
 @{
     var name = "";
+
+    Dictionary<string, int> percents = new Dictionary<string, int>()
+{
+        { "Beginner/A1", 10},
+        { "Elementary/A2", 20},
+        { "Intermediate/B1", 30 },
+        { "Upper Intermediate/B2", 50},
+        { "Advanced/C1", 80 },
+        { "Proficient/C2", 100 }
+    };
+
+    var percent = 0;
 }
 
 <div class="container">
@@ -141,6 +153,16 @@
                 <hr />
             </div>
         </div>
+
+        @foreach (var item in Model.Languages)
+        {
+            { percent = percents[item.Level]; }
+            <label>@item.Name - @item.Level</label>
+            <div class="progress mb-3">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
+            </div>
+        }
+
     </div>
     <hr />
     <!--Certificates-->
@@ -154,3 +176,4 @@
     </div>
     <hr />
 </div>
+
