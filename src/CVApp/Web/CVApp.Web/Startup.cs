@@ -70,12 +70,14 @@ namespace CVApp.Web
 
             
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //The Sanitizer remove the whole text between the script tags, togader with the tags;
             services.AddScoped<ISanitizer, HtmlSanitizerAdapter>();
             services.AddScoped<IPersonalInfoService, PersonalInfoService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IStartService, StartService>();
             services.AddScoped<IResumeService, ResumeService>();
             services.AddScoped<IEducationService, EducationService>();
+            services.AddScoped<IWorkService, WorkService>();
 
             services.AddLogging();
         }

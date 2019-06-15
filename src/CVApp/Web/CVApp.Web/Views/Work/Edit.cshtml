@@ -1,0 +1,112 @@
+﻿@model CVApp.ViewModels.Work.WorkEditViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <h2>Work</h2>
+            <hr />
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <input asp-for="@Model.InputVM.ResumeId" type=hidden value="@Model.InputVM.ResumeId" />
+                <div class="form-element">
+                    <div class="form-group">
+                        <label asp-for="@Model.InputVM.Company">Employer</label>
+                        <input asp-for="@Model.InputVM.Company" class="form-control" value="@Model.InputVM.Company">
+                        <span asp-validation-for="@Model.InputVM.Company" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.InputVM.Title">Job Title</label>
+                        <input asp-for="@Model.InputVM.Title" class="form-control" value="@Model.InputVM.Title">
+                        <span asp-validation-for="@Model.InputVM.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-row">
+                        <!--DatePicker from Tempus Dominus-->
+                        <div class='col-md-6'>
+                            <div class="form-group">
+                                <label asp-for="@Model.InputVM.FromYear">Start year</label>
+                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                                    <input asp-for="@Model.InputVM.FromYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" value="" />
+                                    <span asp-validation-for="@Model.InputVM.FromYear" class="text-danger"></span>
+                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-md-6'>
+                            <div class="form-group">
+                                <label asp-for="@Model.InputVM.ToYear">End year</label>
+                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                                    <input asp-for="@Model.InputVM.ToYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" value="" />
+                                    <span asp-validation-for="@Model.InputVM.ToYear" class="text-danger"></span>
+                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="padding: 1px;">
+                        <label asp-for="@Model.InputVM.Description">Job Description</label>
+                        <textarea asp-for="@Model.InputVM.Description" class="form-control myTextarea" rows="5"></textarea>
+                        <span asp-validation-for="@Model.InputVM.Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="@Model.InputVM.Country">Country</label>
+                            <select asp-for="@Model.InputVM.Country" class="form-control countries order-alpha" id="countryId">
+                                <option value="">Select Country</option>
+                            </select>
+                            <span asp-validation-for="@Model.InputVM.Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="@Model.InputVM.Region">Region</label>
+                            <select asp-for="@Model.InputVM.Region" class="form-control states order-alpha" id="stateId">
+                                <option value="@Model.InputVM.Region">@Model.InputVM.Region</option>
+                            </select>
+                            <span asp-validation-for="@Model.InputVM.Region" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="@Model.InputVM.City">City</label>
+                            <select asp-for="@Model.InputVM.City" class="form-control cities order-alpha" id="cityId">
+                                <option value="@Model.InputVM.City">@Model.InputVM.City</option>
+                            </select>
+                            <span asp-validation-for="@Model.InputVM.City" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="submit" asp-route-Id="@Model.Id" class="btn btn-primary">Save</button>
+                    </div>
+                    <div class="col-md-auto">
+                        <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-info" role="button">Back</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            InitTinymce();
+
+            AddDateTimePicker();
+        });
+
+    setTimeout(function () {$('#datetimepicker7').datetimepicker(
+        'date', moment('@Model.InputVM.FromYear.ToString("MM/YYYY")', 'MM/YYYY')
+    ); }, 500);
+
+    setTimeout(function () {$('#datetimepicker8').datetimepicker(
+        'date', moment('@Model.InputVM.ToYear.HasValue?Model.InputVM.Value.ToString("MM/YYYY"): ""', 'MM/YYYY')
+    ); }, 500);
+
+    setTimeout(function(){$('#countryId').val('@Model.InputVM.Country').attr('select', 'selected'); }, 3000);
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

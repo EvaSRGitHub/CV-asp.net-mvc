@@ -19,7 +19,7 @@ namespace CVApp.Web.Controllers
             this.resumeService = resumeService;
         }
 
-        public IActionResult Display()
+        public async Task<IActionResult> Display()
         {
             var userName = this.User.Identity.Name;
 
@@ -27,7 +27,7 @@ namespace CVApp.Web.Controllers
 
             try
             {
-                model = this.resumeService.DisplayResume(userName);
+                model = await this.resumeService.DisplayResume(userName);
             }
             catch (Exception e)
             {

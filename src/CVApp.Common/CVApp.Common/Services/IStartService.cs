@@ -8,6 +8,6 @@ namespace CVApp.Common.Services
 {
     public interface IStartService
     {
-        StartOutViewModel GetStartInfoByUserName(string userName);
+        Task<StartOutViewModel> GetStartInfoByUserName(string userName);
     }
 }

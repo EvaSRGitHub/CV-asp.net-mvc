@@ -46,26 +46,7 @@ namespace CVApp.Web.Controllers
             return RedirectToAction("Display", "Resume");
         }
 
-        //public IActionResult Display()
-        //{
-        //    var currentUser = this.User.Identity.Name;
-
-        //    PersonalInfoOutViewModel model;
-
-        //    try
-        //    {
-        //        model = this.personalInfoService.DisplayForm(currentUser);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        ViewData["Error"] = e.Message;
-        //        return this.View("Error");
-        //    }
-
-        //    return this.View(model);
-        //}
-      
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
             var currentUser = this.User.Identity.Name;
 
@@ -73,7 +54,12 @@ namespace CVApp.Web.Controllers
 
             try
             {
-                model = this.personalInfoService.EditForm(currentUser);
+                model = await this.personalInfoService.EditForm(currentUser);
+
+                if(model == null)
+                {
+                    return NotFound();
+                }
             }
             catch (Exception e)
             {

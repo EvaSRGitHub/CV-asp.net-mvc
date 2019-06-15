@@ -4,14 +4,16 @@ using CVApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CVApp.Data.Migrations
 {
     [DbContext(typeof(CVAppDbContext))]
-    partial class CVAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190614124930_Work_Region_City_added")]
+    partial class Work_Region_City_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,7 +242,7 @@ namespace CVApp.Data.Migrations
                     b.Property<string>("Title")
                         .IsRequired();
 
-                    b.Property<DateTime?>("ToYear");
+                    b.Property<DateTime>("ToYear");
 
                     b.HasKey("Id");
 

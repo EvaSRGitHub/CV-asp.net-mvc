@@ -44,26 +44,23 @@ namespace CVApp.Web.Controllers
                 return this.View("Error");
             }
 
-           return RedirectToAction("Display", "Resume");
+            return RedirectToAction("Display", "Resume");
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
-                return RedirectToAction("Home", "Index");
+                return NotFound();
             }
 
-            EducationEditViewModel model;
+            string userName = this.User.Identity.Name;
 
-            try
+            EducationEditViewModel model = await this.educationService.EditForm(id, userName);
+           
+            if(model == null)
             {
-                model = await this.educationService.EditForm(id);
-            }
-            catch (Exception e)
-            {
-                ViewData["Error"] = e.Message;
-                return View("Error");
+                return NotFound();
             }
 
             return this.View(model);
@@ -96,19 +93,16 @@ namespace CVApp.Web.Controllers
         {
             if (id <= 0)
             {
-                return RedirectToAction("Home", "Index");
+                return NotFound();
             }
 
-            EducationEditViewModel model;
+            string userName = this.User.Identity.Name;
 
-            try
+            EducationEditViewModel model = await this.educationService.DeleteForm(id, userName);
+
+            if (model == null)
             {
-                model = await this.educationService.DeleteForm(id);
-            }
-            catch (Exception e)
-            {
-                ViewData["Error"] = e.Message;
-                return View("Error");
+                return NotFound();
             }
 
             return this.View(model);

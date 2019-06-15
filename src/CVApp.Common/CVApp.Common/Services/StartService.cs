@@ -21,14 +21,13 @@ namespace CVApp.Common.Services
             this.logger = logger;
             this.resumeRepo = resumeRepo;
         }
-        public StartOutViewModel GetStartInfoByUserName(string userName)
+        public async Task<StartOutViewModel> GetStartInfoByUserName(string userName)
         {
-            var resume = this.resumeRepo.All().Include("User").SingleOrDefault(u => u.User.UserName == userName);
+            var resume = await this.resumeRepo.All().Include("User").SingleOrDefaultAsync(u => u.User.UserName == userName);
             
             if (resume == null)
             {
                 this.logger.LogError("Current user resume is null.");
-                //ErrorPage
             }
 
             var model = new StartOutViewModel

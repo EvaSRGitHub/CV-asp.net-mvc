@@ -39,24 +39,39 @@ namespace CVApp.Common.Services
             this.logger = logger;
         }
 
-        public PersonalInfoViewModel EditForm(string userName)
+        public async Task<PersonalInfoViewModel> EditForm(string userName)
         {
-            var user = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName);
 
-            var model = new PersonalInfoViewModel
+            if(user == null)
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.Value,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Picture = null,
-                CurrentPicture = user.Picture,
-                Address = user.Address,
-                RepoProfile = user.RepoProfile,
-                Summary = user.Summary
-            };
+                return null;
+            }
 
+            PersonalInfoViewModel model = null;
+
+            try
+            {
+                model = new PersonalInfoViewModel
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    DateOfBirth = user.DateOfBirth.Value,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Picture = null,
+                    CurrentPicture = user.Picture,
+                    Address = user.Address,
+                    RepoProfile = user.RepoProfile,
+                    Summary = user.Summary
+                };
+            }
+            catch (Exception e)
+            {
+                //Log Error
+                return model;
+            }
+            
             return model;
         }
 
@@ -115,7 +130,16 @@ namespace CVApp.Common.Services
 
             this.userRepo.Update(resume.User);
 
-            await this.userRepo.SaveChangesAsync();
+            try
+            {
+                await this.userRepo.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                //Log exeption
+                throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
+            }
         }
 
         public async Task DeletePicture(string userName)
@@ -132,7 +156,15 @@ namespace CVApp.Common.Services
 
             this.userRepo.Update(user);
 
-           await this.userRepo.SaveChangesAsync();
+            try
+            {
+                await this.userRepo.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                //Log exeption
+                throw new InvalidOperationException("Unable to delete your picture. Try again, and if the problem persists contact site administrator.");
+            }
         }
     }
 }

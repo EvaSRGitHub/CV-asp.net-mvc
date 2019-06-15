@@ -10,6 +10,6 @@ namespace CVApp.Common.Services
     {
         Task CreateResume(string userId);
 
-        ResumeDisplayViewModel DisplayResume(string userName);
+        Task<ResumeDisplayViewModel> DisplayResume(string userName);
     }
 }

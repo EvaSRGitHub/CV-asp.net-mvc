@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CVApp.Models
+namespace CVApp.ViewModels.Work
 {
-    public class WorkExperience:BaseModel<int>
+    public class WorkInputViewModel
     {
         [Required]
         public string Company { get; set; }
@@ -32,7 +32,5 @@ namespace CVApp.Models
 
         [Required]
         public int ResumeId { get; set; }
-
-        public Resume Resume { get; set; }
     }
 }

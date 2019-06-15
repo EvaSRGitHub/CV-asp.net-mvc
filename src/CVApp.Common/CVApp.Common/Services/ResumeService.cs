@@ -3,6 +3,7 @@ using CVApp.Models;
 using CVApp.ViewModels.Education;
 using CVApp.ViewModels.PersonalInfo;
 using CVApp.ViewModels.Resume;
+using CVApp.ViewModels.Work;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -58,28 +59,27 @@ namespace CVApp.Common.Services
             }
         }
 
-        public ResumeDisplayViewModel DisplayResume(string userName)
+        public async Task<ResumeDisplayViewModel> DisplayResume(string userName)
         {
             if (string.IsNullOrEmpty(userName))
             {
                 throw new InvalidOperationException("Something went wrong.Please try again later.");
             }
 
-            var resume = this.resumeRepo.All().Include("User").Include("Education").AsNoTracking().SingleOrDefault(u => u.User.UserName == userName);
+            var resume = await this.resumeRepo.All()
+                .Include("User")
+                .Include("Education")
+                .Include("Works")
+                .AsNoTracking().SingleOrDefaultAsync(u => u.User.UserName == userName);
 
             if (resume == null)
             {
                 throw new NullReferenceException("Something went wrong.Please try again later.");
             }
 
-            var model = new ResumeDisplayViewModel();
+            ResumeDisplayViewModel model = new ResumeDisplayViewModel();
 
-            var personalInfo = new PersonalInfoOutViewModel();
-
-            if (resume.User != null)
-            {
-                personalInfo = CreatePersonalInvoDisplayVM(resume);
-            }
+            PersonalInfoOutViewModel personalInfo  = CreatePersonalInvoDisplayVM(resume);
 
             model.PersonalInfo = personalInfo;
 
@@ -92,7 +92,31 @@ namespace CVApp.Common.Services
 
             model.Educations = educationCollection;
 
+            var workCollection = new List<WorkOutViewModel>();
+
+            if (resume.Works.Count() > 0)
+            {
+                workCollection = CreateWorkDisplayVM(resume);
+            }
+
+            model.Employments = workCollection;
+
             return model;
+        }
+
+        private List<WorkOutViewModel> CreateWorkDisplayVM(Resume resume)
+        {
+            return resume.Works.Select(w => new WorkOutViewModel
+            {
+                Company = HttpUtility.HtmlDecode(w.Company),
+                Title = HttpUtility.HtmlDecode(w.Title),
+                FromYear = w.FromYear.ToString("MM/yyyy"),
+                ToYear = w.ToYear.HasValue? w.ToYear.Value.ToString("MM/yyyy") : "",
+                Description = HttpUtility.HtmlDecode(w.Description),
+                Country = w.Country,
+                City = w.City,
+                Id = w.Id
+            }).OrderByDescending(x => x.FromYear).ThenByDescending(x => x.ToYear).ToList();
         }
 
         private List<EducationOutViewModel> CreateEducationDisplayVM(Resume resume)
@@ -121,7 +145,7 @@ namespace CVApp.Common.Services
                 LastName = resume.User.LastName,
                 Email = resume.User.Email,
                 PhoneNumber = resume.User.PhoneNumber,
-                DateOfBirth = resume.User.DateOfBirth.Value.ToShortDateString(),
+                DateOfBirth = resume.User.DateOfBirth.HasValue ? resume.User.DateOfBirth.Value.ToShortDateString() : null,
                 RepoProfile = resume.User.RepoProfile,
                 Summary = HttpUtility.HtmlDecode(resume.User.Summary),
             };

@@ -20,11 +20,11 @@ namespace CVApp.Web.Controllers
 
 
         // GET: /<controller>/
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userName = this.User.Identity.Name;
 
-            var model = this.startService.GetStartInfoByUserName(userName);
+            var model = await this.startService.GetStartInfoByUserName(userName);
 
             return View(model);
         }

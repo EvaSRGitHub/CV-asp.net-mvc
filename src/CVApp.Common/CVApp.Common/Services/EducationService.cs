@@ -50,18 +50,26 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException(e.Message);
+                //Log exeption
+                throw new InvalidOperationException("Unable to delete your data. Try again, and if the problem persists contact site administrator.");
             }
         }
 
-        public async Task<EducationEditViewModel> DeleteForm(int id)
+        public async Task<EducationEditViewModel> DeleteForm(int id, string userName)
         {
-            var educ = await this.educationRepo.GetByIdAsync(id);
+            var educ = await this.educationRepo.All().Include(e => e.Resume).ThenInclude(r => r.User).FirstOrDefaultAsync(e => e.Id == id);
+            var user = educ?.Resume.User.UserName;
 
-            EducationEditViewModel model = new EducationEditViewModel();
+            if (user != userName)
+            {
+                return null;
+            }
+
+            EducationEditViewModel model = null;
 
             if (educ != null)
             {
+                model = new EducationEditViewModel();
                 model.Id = educ.Id;
                 model.InputVM = new EducationInputViewModel
                 {
@@ -81,14 +89,21 @@ namespace CVApp.Common.Services
             return model;
         }
 
-        public async Task<EducationEditViewModel> EditForm(int id)
+        public async Task<EducationEditViewModel> EditForm(int id, string userName)
         {
-            var educ = await this.educationRepo.GetByIdAsync(id);
+            var educ = await this.educationRepo.All().Include(e => e.Resume).ThenInclude(r => r.User).FirstOrDefaultAsync(e => e.Id == id);
+            var user = educ?.Resume.User.UserName;
 
-            EducationEditViewModel model = new EducationEditViewModel();
+            if(user != userName)
+            {
+                return null;
+            }
+
+            EducationEditViewModel model = null;
 
             if (educ != null)
             {
+                model = new EducationEditViewModel();
                 model.Id = educ.Id;
                 model.InputVM = new EducationInputViewModel
                 {
@@ -110,6 +125,16 @@ namespace CVApp.Common.Services
 
         public async Task SaveFormData(EducationInputViewModel model, string userName)
         {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new NullReferenceException("Invalid data");
+            }
+
+            if(model == null)
+            {
+                throw new NullReferenceException("Invalid data");
+            }
+
             var resumeId = this.resumeRepo.All().Include("User").SingleOrDefault(r => r.User.UserName == userName).Id;
 
             var education = new Education
@@ -126,7 +151,6 @@ namespace CVApp.Common.Services
                 Region = model.Region
             };
 
-
             await this.educationRepo.AddAsync(education);
 
             try
@@ -135,7 +159,8 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException(e.Message);
+                //Log exeption
+                throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
             }
         }
 
@@ -164,7 +189,8 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                throw new InvalidOperationException(e.Message);
+                //Log exeption
+                throw new InvalidOperationException("Unable to change your data. Try again, and if the problem persists contact site administrator.");
             }
         }
 

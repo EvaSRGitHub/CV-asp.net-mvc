@@ -57,6 +57,7 @@
                         <div class="col-md-6">
                             <a asp-controller="PersonalInfo" asp-action="Edit" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,24 +74,83 @@
 
         @foreach (var item in Model.Educations)
         {
-        <div class="row">
-            <div class="col-12">
-                <h4>@item.Institution - @item.Country, @item.City <small class="text-muted"><em>(@item.FromYear - @item.ToYear)</em></small></h4>
-                <h5>@item.Diploma (GPA - @item.GPA)</h5>
-                <div>@Html.Raw(item.MainSubjects)</div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+            <div class="row">
+                <div class="col-12">
+                    <h4>@item.Institution - @item.Country, @item.City <small class="text-muted"><em>(@item.FromYear - @item.ToYear)</em></small></h4>
+                    <h5>@item.Diploma (GPA - @item.GPA)</h5>
+                    <div>@Html.Raw(item.MainSubjects)</div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                        </div>
+                        <div class="col-md-auto">
+                            <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                        </div>
                     </div>
-                    <div class="col-md-auto">
-                        <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
-                    </div>
+                    <hr />
                 </div>
-                <hr />
             </div>
-        </div>
         }
     </div>
     <!--Work-->
-
+    <div class="work">
+        <div class="row">
+            <div>
+                <h2>Work experience</h2>
+                <hr />
+            </div>
+        </div>
+        @foreach (var item in Model.Employments)
+        {
+            <dl class="row">
+                <dt class="col-sm-3">Employer</dt>
+                <dd class="col-sm-9">@item.Company, @item.Country, @item.City</dd>
+                <dt class="col-sm-3">Job Title</dt>
+                <dd class="col-sm-9">@item.Title</dd>
+                <dt class="col-sm-3">Employment Period</dt>
+                <dd class="col-sm-9">@item.FromYear - @item.ToYear</dd>
+                <dt class="col-sm-3">Job Description</dt>
+                <dd class="col-sm-9">@Html.Raw(item.Description)</dd>
+            </dl>
+            <div class="row">
+                <div class="col-md-6">
+                    <a asp-controller="Work" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                </div>
+                <div class="col-md-auto">
+                    <a asp-controller="Work" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                </div>
+            </div>
+            <hr />
+        }
+    </div>
+    <!--Skills-->
+    <div class="skills">
+        <div class="row">
+            <div>
+                <h2>Skills</h2>
+                <hr />
+            </div>
+        </div>
+    </div>
+    <hr />
+    <!--Languages-->
+    <div class="languages">
+        <div class="row">
+            <div>
+                <h2>Languages</h2>
+                <hr />
+            </div>
+        </div>
+    </div>
+    <hr />
+    <!--Certificates-->
+    <div class="certificates">
+        <div class="row">
+            <div>
+                <h2>Certificates</h2>
+                <hr />
+            </div>
+        </div>
+    </div>
+    <hr />
 </div>
