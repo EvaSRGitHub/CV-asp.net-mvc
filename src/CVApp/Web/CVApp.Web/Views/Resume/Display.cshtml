@@ -161,6 +161,14 @@
             <div class="progress mb-3">
                 <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <a asp-controller="Language" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                </div>
+                <div class="col-md-auto">
+                    <a asp-controller="Language" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                </div>
+            </div>
         }
 
     </div>

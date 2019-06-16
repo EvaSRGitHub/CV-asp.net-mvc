@@ -23,6 +23,84 @@ namespace CVApp.Common.Services
             this.sanitizer = sanitizer;
         }
 
+        public async Task Delete(LanguageEditViewModel model)
+        {
+            if (model == null)
+            {
+                throw new NullReferenceException("Invalid data");
+            }
+
+            var language = await this.languageRepo.GetByIdAsync(model.Id);
+
+            try
+            {
+                this.languageRepo.Delete(language);
+                await this.languageRepo.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                //Log exeption
+                throw new InvalidOperationException("Unable to delete your data. Try again, and if the problem persists contact site administrator.");
+            }
+        }
+
+        public async Task<LanguageEditViewModel> DeleteForm(int id, string userName)
+        {
+            var language = await this.languageRepo.All().Include(l => l.Resume).ThenInclude(r => r.User).SingleOrDefaultAsync(l => l.Id == id);
+
+            var user = language?.Resume.User.UserName;
+
+            if (userName != user)
+            {
+                return null;
+            }
+
+            LanguageEditViewModel model = null;
+
+            if (language != null)
+            {
+                model = new LanguageEditViewModel
+                {
+                    Id = language.Id,
+                    InputVM = new LanguageInputViewModel
+                    {
+                        Name = language.Name,
+                        Level = language.Level,
+                        ResumeId = language.ResumeId
+                    }
+                };
+            }
+            return model;
+        }
+
+        public async Task<LanguageEditViewModel> EditForm(int id, string userName)
+        {
+            var language = await this.languageRepo.All().Include(l => l.Resume).ThenInclude(r => r.User).SingleOrDefaultAsync(l => l.Id == id);
+            var user = language?.Resume.User.UserName;
+
+            if (userName != user)
+            {
+                return null;
+            }
+
+            LanguageEditViewModel model = null;
+
+            if (language != null)
+            {
+                model = new LanguageEditViewModel
+                {
+                    Id = language.Id,
+                    InputVM = new LanguageInputViewModel
+                    {
+                        Name = language.Name,
+                        Level = language.Level,
+                        ResumeId = language.ResumeId
+                    }
+                };
+            }
+            return model;
+        }
+
         public async Task SaveFormData(LanguageInputViewModel model, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
@@ -59,6 +137,33 @@ namespace CVApp.Common.Services
             {
                 //Log exeption
                 throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
+            }
+        }
+
+        public async Task Update(LanguageEditViewModel model)
+        {
+            if (model == null)
+            {
+                throw new NullReferenceException("Invalid data");
+            }
+
+            var language = new Language
+            {
+                Id = model.Id,
+                Name = this.sanitizer.Sanitize(model.InputVM.Name),
+                Level = model.InputVM.Level,
+                ResumeId = model.InputVM.ResumeId
+            };
+
+            try
+            {
+                this.languageRepo.Update(language);
+                await this.languageRepo.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                //Logg e
+                throw new InvalidOperationException("Unable to change your data. Try again, and if the problem persists contact site administrator.");
             }
         }
     }

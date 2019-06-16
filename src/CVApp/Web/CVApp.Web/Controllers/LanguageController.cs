@@ -46,5 +46,86 @@ namespace CVApp.Web.Controllers
 
             return RedirectToAction("Display", "Resume");
         }
+
+        public async Task<IActionResult> Edit(int Id)
+        {
+            if (Id <= 0)
+            {
+                return NotFound();
+            }
+
+
+            var userName = this.User.Identity.Name;
+
+            LanguageEditViewModel model = await this.languageService.EditForm(Id, userName);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(LanguageEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Edit", "Language", new { Id = model.Id });
+            }
+
+            try
+            {
+                await this.languageService.Update(model);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+                return this.View("Error");
+            }
+
+            return RedirectToAction("Display", "Resume");
+        }
+
+        public async Task<IActionResult>Delete(int Id)
+        {
+            if (Id <= 0)
+            {
+                return NotFound();
+            }
+
+            var userName = this.User.Identity.Name;
+
+            LanguageEditViewModel model = await this.languageService.DeleteForm(Id, userName);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(LanguageEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Delete", "Language", new { Id = model.Id });
+            }
+
+            try
+            {
+                await this.languageService.Delete(model);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+                return this.View("Error");
+            }
+
+            return RedirectToAction("Display", "Resume");
+        }
     }
 }

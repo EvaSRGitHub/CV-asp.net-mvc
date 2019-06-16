@@ -72,9 +72,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Work information. Please pay attention to the data needed and submit the form again.";
-
-                return View("Error");
+                return RedirectToAction("Edit", "Language", new { Id = model.Id });
             }
 
             try
@@ -112,6 +110,11 @@ namespace CVApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(WorkEditViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Delete", "Language", new { Id = model.Id });
+            }
+
             try
             {
                 await this.workService.Delete(model);

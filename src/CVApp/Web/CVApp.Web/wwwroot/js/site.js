@@ -27,4 +27,14 @@ function InitTinymce() {
     });
 }
 
+function SetLanguageLevelDropdown() {
+    let levels = ['Beginner/A1', 'Elementary/A2', 'Intermediate/B1', 'Upper Intermediate/B2', 'Advanced/C1', 'Proficient/C2'];
+
+    for (i = 0; i < levels.length; i++) {
+        $('#levelId').append($("<option>")
+            .val(levels[i])
+            .html(levels[i])
+        );
+    }
+}
 

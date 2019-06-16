@@ -10,12 +10,12 @@ namespace CVApp.Common.Services
     {
         Task SaveFormData(LanguageInputViewModel model, string userName);
 
-        //Task<WorkEditViewModel> EditForm(int id, string userName);
+        Task<LanguageEditViewModel> EditForm(int id, string userName);
 
-        //Task Update(WorkEditViewModel model);
+        Task Update(LanguageEditViewModel model);
 
-        //Task<WorkEditViewModel> DeleteForm(int id, string userName);
+        Task<LanguageEditViewModel> DeleteForm(int id, string userName);
 
-        //Task Delete(WorkEditViewModel model);
+        Task Delete(LanguageEditViewModel model);
     }
 }
