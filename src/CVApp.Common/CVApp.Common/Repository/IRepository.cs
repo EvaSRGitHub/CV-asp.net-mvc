@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 namespace CVApp.Common.Repository
 {
     public interface IRepository<TEntity>
-        where TEntity: class
+        where TEntity : class
     {
         IQueryable<TEntity> All();
 

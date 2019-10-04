@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CVApp.Common.Repository;
+﻿using CVApp.Common.Repository;
 using CVApp.Models;
 using CVApp.ViewModels.Start;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CVApp.Common.Services
 {
@@ -21,6 +18,7 @@ namespace CVApp.Common.Services
             this.logger = logger;
             this.resumeRepo = resumeRepo;
         }
+
         public async Task<StartOutViewModel> GetStartInfoByUserName(string userName)
         {
             var resume = await this.resumeRepo.All().Include("User").SingleOrDefaultAsync(u => u.User.UserName == userName);

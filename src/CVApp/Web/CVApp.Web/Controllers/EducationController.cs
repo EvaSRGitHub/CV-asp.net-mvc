@@ -113,7 +113,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Education information. Please pay attention to the data needed and submit the form again.";
+                ViewData["Error"] = "An error occurred with your Education information.";
 
                 return View("Error");
             }

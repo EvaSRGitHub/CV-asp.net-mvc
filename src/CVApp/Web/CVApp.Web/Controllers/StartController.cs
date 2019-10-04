@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CVApp.Common.Services;
+﻿using CVApp.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CVApp.Web.Controllers
 {
@@ -18,7 +15,6 @@ namespace CVApp.Web.Controllers
             this.startService = startService;
         }
 
-
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
@@ -26,8 +22,7 @@ namespace CVApp.Web.Controllers
 
             var model = await this.startService.GetStartInfoByUserName(userName);
 
-            return View(model);
+            return this.View(model);
         }
-
     }
 }
