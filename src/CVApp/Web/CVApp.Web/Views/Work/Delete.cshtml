@@ -63,7 +63,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" asp-route-Id="@Model.Id" class="btn btn-danger">Delete</button>
+                        <button data-message="Are you sure you want to delete this work info." onclick="TriggerModal(event)" type="submit" asp-route-Id="@Model.Id" class="btn btn-danger">Delete</button>
                     </div>
                     <div class="col-md-auto">
                         <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-info" role="button">Back</a>
@@ -92,11 +92,10 @@
     ); $('#datetimepicker7').attr('readonly','readonly');}, 500);
 
     setTimeout(function () {$('#datetimepicker8').datetimepicker(
-        'date', moment('@Model.InputVM.ToYear.HasValue?Model.InputVM.Value.ToString("MM/YYYY"): ""', 'MM/YYYY')
+        'date', moment('@Model.InputVM.ToYear.HasValue?@Model.InputVM.ToYear.Value.ToString("MM/YYYY"): ""', 'MM/YYYY')
     );
         $('#datetimepicker8').attr('readonly','readonly');
     }, 500);
     </script>
-    <partial name="_ValidationScriptsPartial" />
 }
 

@@ -55,7 +55,7 @@
                         <div class="input-group">
                             <input asp-for="CurrentPicture" type="url" class="form-control" value="@Model.CurrentPicture" readonly>
                             <div class="input-group-append ml-3">
-                                <a href="javascript:void(0);" data-url="@Model.CurrentPicture" class="deleteItem" style="color:red">X</a>
+                                <a href="javascript:void(0);" data-url="@Model.CurrentPicture" class="deleteItem" style="color:red" data-toggle="tooltip" data-placement="top" title="Delete current picture">X</a>
                             </div>
                         </div>
                     </div>
@@ -95,6 +95,7 @@
         $('.deleteItem').click(function (e) {
             e.preventDefault();
             var $ctrl = $(this);
+
             if (confirm('Do you really want to delete this file?')) {
                 $.ajax({
                     url: "/PersonalInfo/DeletePicture",
