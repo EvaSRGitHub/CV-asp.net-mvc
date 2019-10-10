@@ -4,14 +4,16 @@ using CVApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CVApp.Data.Migrations
 {
     [DbContext(typeof(CVAppDbContext))]
-    partial class CVAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191007113629_Work_Education_fieldsName_changes")]
+    partial class Work_Education_fieldsName_changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,7 +134,7 @@ namespace CVApp.Data.Migrations
                     b.Property<string>("Diploma")
                         .IsRequired();
 
-                    b.Property<DateTime?>("EndDate");
+                    b.Property<DateTime>("EndDate");
 
                     b.Property<double>("GPA");
 

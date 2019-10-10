@@ -1,66 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using CVApp.Common.Repository;
+﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
 using CVApp.Models;
-using CVApp.ViewModels.Education;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using static CVApp.ViewModels.Education.EducationViewModels;
 
 namespace CVApp.Common.Services
 {
     public class EducationService : IEducationService
     {
         private readonly IRepository<Education> educationRepo;
-        private readonly IRepository<Resume> resumeRepo;
+        private readonly IRepository<CVAppUser> userRepo;
+        private readonly IHttpContextAccessor accessor;
+        //The Sanitizer remove the whole text between the script tags, together with the tags;
         private readonly ISanitizer sanitizer;
+        private readonly int? resumeId;
 
-        public EducationService(IRepository<Education> educationRepo, IRepository<Resume> resumeRepo, ISanitizer sanitizer)
+        public EducationService(IRepository<Education> educationRepo, IRepository<CVAppUser> userRepo, ISanitizer sanitizer, IHttpContextAccessor accessor)
         {
             this.educationRepo = educationRepo;
-            this.resumeRepo = resumeRepo;
+            this.userRepo = userRepo;
             this.sanitizer = sanitizer;
+            this.accessor = accessor;
+            this.resumeId = this.userRepo.All().SingleOrDefault(u => u.UserName == this.accessor.HttpContext.User.Identity.Name).ResumeId.GetValueOrDefault();
         }
 
         public async Task Delete(EducationEditViewModel model)
         {
-            var education = new Education
+            if (model == null)
             {
-                ResumeId = model.InputVM.ResumeId,
-                Institution = this.sanitizer.Sanitize(model.InputVM.Institution),
-                FromYear = model.InputVM.FromYear,
-                ToYear = model.InputVM.ToYear,
-                GPA = model.InputVM.GPA,
-                MainSubjects = this.sanitizer.Sanitize(model.InputVM.MainSubjects),
-                Diploma = this.sanitizer.Sanitize(model.InputVM.Diploma),
-                City = model.InputVM.City,
-                Country = model.InputVM.Country,
-                Region = model.InputVM.Region,
-                Id = model.Id
-            };
+                throw new NullReferenceException("Invalid data");
+            }
 
-            this.educationRepo.Delete(education);
+            var educ = await this.educationRepo.GetByIdAsync(model.Id);
 
             try
             {
+                this.educationRepo.Delete(educ);
                 await this.educationRepo.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to delete your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException($"Unable to delete education model {model.Id} id.", e);
             }
         }
 
-        public async Task<EducationEditViewModel> DeleteForm(int id, string userName)
+        public async Task<EducationEditViewModel> EditDeleteForm(int id, string userName)
         {
-            var educ = await this.educationRepo.All().Include(e => e.Resume).ThenInclude(r => r.User).FirstOrDefaultAsync(e => e.Id == id);
-            var user = educ?.Resume.User.UserName;
+            var educ = await this.educationRepo.All().SingleOrDefaultAsync(e => e.Id == id);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == educ.ResumeId);
+            var currentUser = user.UserName;
 
-            if (user != userName)
+            if (userName != currentUser)
             {
                 return null;
             }
@@ -69,51 +63,16 @@ namespace CVApp.Common.Services
 
             if (educ != null)
             {
-                model = new EducationEditViewModel();
-                model.Id = educ.Id;
-                model.InputVM = new EducationInputViewModel
+                model = new EducationEditViewModel
                 {
+                    Id = educ.Id,
                     Institution = educ.Institution,
                     Diploma = educ.Diploma,
                     Country = educ.Country,
                     Region = educ.Region,
                     City = educ.City,
-                    FromYear = educ.FromYear,
-                    ToYear = educ.ToYear,
-                    GPA = educ.GPA,
-                    MainSubjects = educ.MainSubjects,
-                    ResumeId = educ.ResumeId
-                };
-            }
-
-            return model;
-        }
-
-        public async Task<EducationEditViewModel> EditForm(int id, string userName)
-        {
-            var educ = await this.educationRepo.All().Include(e => e.Resume).ThenInclude(r => r.User).FirstOrDefaultAsync(e => e.Id == id);
-            var user = educ?.Resume.User.UserName;
-
-            if(user != userName)
-            {
-                return null;
-            }
-
-            EducationEditViewModel model = null;
-
-            if (educ != null)
-            {
-                model = new EducationEditViewModel();
-                model.Id = educ.Id;
-                model.InputVM = new EducationInputViewModel
-                {
-                    Institution = educ.Institution,
-                    Diploma = educ.Diploma,
-                    Country = educ.Country,
-                    Region = educ.Region,
-                    City = educ.City,
-                    FromYear = educ.FromYear,
-                    ToYear = educ.ToYear,
+                    StartDate = educ.StartDate,
+                    EndDate = educ.EndDate.HasValue ? educ.EndDate.Value : (DateTime?)null,
                     GPA = educ.GPA,
                     MainSubjects = educ.MainSubjects,
                     ResumeId = educ.ResumeId
@@ -127,22 +86,25 @@ namespace CVApp.Common.Services
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new NullReferenceException("Invalid data");
+                throw new NullReferenceException($"{userName} is null or empty");
             }
 
             if(model == null)
             {
-                throw new NullReferenceException("Invalid data");
+                throw new NullReferenceException("Education model is null");
             }
 
-            var resumeId = this.resumeRepo.All().Include("User").SingleOrDefault(r => r.User.UserName == userName).Id;
+            if (this.resumeId == null)
+            {
+                throw new InvalidOperationException($"Resume id is null for user {userName}.");
+            }
 
             var education = new Education
             {
-                ResumeId = resumeId,
+                ResumeId = this.resumeId.Value,
                 Institution = this.sanitizer.Sanitize(model.Institution),
-                FromYear = model.FromYear,
-                ToYear = model.ToYear,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate.HasValue ? model.EndDate.Value : (DateTime?)null,
                 GPA = model.GPA,
                 MainSubjects = this.sanitizer.Sanitize(model.MainSubjects),
                 Diploma = this.sanitizer.Sanitize(model.Diploma),
@@ -159,25 +121,29 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
 
         public async Task Update(EducationEditViewModel model)
         {
+            if (this.resumeId == null)
+            {
+                throw new InvalidOperationException($"Resume id is null.");
+            }
+
             var education = new Education
             {
-                ResumeId = model.InputVM.ResumeId,
-                Institution = this.sanitizer.Sanitize(model.InputVM.Institution),
-                FromYear = model.InputVM.FromYear,
-                ToYear = model.InputVM.ToYear,
-                GPA = model.InputVM.GPA,
-                MainSubjects = this.sanitizer.Sanitize(model.InputVM.MainSubjects),
-                Diploma = this.sanitizer.Sanitize(model.InputVM.Diploma),
-                City = model.InputVM.City,
-                Country = model.InputVM.Country,
-                Region = model.InputVM.Region,
+                ResumeId = this.resumeId.Value,
+                Institution = this.sanitizer.Sanitize(model.Institution),
+                StartDate = model.StartDate,
+                EndDate = model.EndDate.HasValue ? model.EndDate.Value : (DateTime?) null,
+                GPA = model.GPA,
+                MainSubjects = this.sanitizer.Sanitize(model.MainSubjects),
+                Diploma = this.sanitizer.Sanitize(model.Diploma),
+                City = model.City,
+                Country = model.Country,
+                Region = model.Region,
                 Id = model.Id
             };
 
@@ -189,10 +155,8 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to change your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
-
     }
 }

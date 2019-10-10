@@ -4,14 +4,16 @@ using CVApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CVApp.Data.Migrations
 {
     [DbContext(typeof(CVAppDbContext))]
-    partial class CVAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191009201706_Education_Nullable_EndD")]
+    partial class Education_Nullable_EndD
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

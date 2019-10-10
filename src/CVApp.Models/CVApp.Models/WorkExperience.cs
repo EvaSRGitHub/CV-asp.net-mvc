@@ -26,9 +26,9 @@ namespace CVApp.Models
         public string City { get; set; }
 
         [Required]
-        public DateTime FromYear { get; set; }
+        public DateTime StartDate { get; set; }
 
-        public DateTime? ToYear { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Required]
         public int ResumeId { get; set; }

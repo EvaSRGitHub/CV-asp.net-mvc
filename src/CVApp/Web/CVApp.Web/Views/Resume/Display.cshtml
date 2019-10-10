@@ -15,7 +15,7 @@
     var percent = 0;
 }
 
-<div class="container">
+<div class="container frame">
     <div class="col-md-12">
         <h1 class="text-center">Resume</h1>
         <hr />
@@ -74,9 +74,9 @@
             </div>
         </div>
     </div>
-    <hr />
+    <hr class="frame_hr" />
     <!--Education-->
-    <div class="education">
+    <div id="education">
         <div class="row">
             <div>
                 <h2>Education</h2>
@@ -88,15 +88,15 @@
         {
             <div class="row">
                 <div class="col-12">
-                    <h4>@item.Institution - @item.Country, @item.City <small class="text-muted"><em>(@item.FromYear - @item.ToYear)</em></small></h4>
+                    <h4>@item.Institution - @item.Country, @item.City <small class="text-muted"><em>(@item.StartDate - @item.EndDate)</em></small></h4>
                     <h5>@item.Diploma (GPA - @item.GPA)</h5>
                     <div>@Html.Raw(item.MainSubjects)</div>
-                    <div class="row">
+                    <div class="row justify-content-between">
                         <div class="col-md-6">
                             <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
                         </div>
                         <div class="col-md-auto">
-                            <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                            <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
                         </div>
                     </div>
                     <hr />
@@ -104,6 +104,7 @@
             </div>
         }
     </div>
+    <hr class="frame_hr" />
     <!--Work-->
     <div class="work">
         <div class="row">
@@ -120,21 +121,22 @@
                 <dt class="col-sm-3">Job Title</dt>
                 <dd class="col-sm-9">@item.Title</dd>
                 <dt class="col-sm-3">Employment Period</dt>
-                <dd class="col-sm-9">@item.FromYear - @item.ToYear</dd>
+                <dd class="col-sm-9">@item.StartDate - @item.EndDate</dd>
                 <dt class="col-sm-3">Job Description</dt>
                 <dd class="col-sm-9">@Html.Raw(item.Description)</dd>
             </dl>
-            <div class="row">
+            <div class="row justify-content-between">
                 <div class="col-md-6">
                     <a asp-controller="Work" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
                 </div>
                 <div class="col-md-auto">
-                    <a asp-controller="Work" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                    <a asp-controller="Work" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
                 </div>
             </div>
             <hr />
         }
     </div>
+    <hr class="frame_hr" />
     <!--Skills-->
     <div class="skills">
         <div class="row">
@@ -144,7 +146,7 @@
             </div>
         </div>
     </div>
-    <hr />
+    <hr class="frame_hr" />
     <!--Languages-->
     <div class="languages">
         <div class="row">
@@ -161,18 +163,18 @@
             <div class="progress mb-3">
                 <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
             </div>
-            <div class="row">
+            <div class="row justify-content-between">
                 <div class="col-md-6">
                     <a asp-controller="Language" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
                 </div>
                 <div class="col-md-auto">
-                    <a asp-controller="Language" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary mt-3" role="button" aria-pressed="true">Delete</a>
+                    <a asp-controller="Language" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
                 </div>
             </div>
         }
 
     </div>
-    <hr />
+    <hr class="frame_hr" />
     <!--Certificates-->
     <div class="certificates">
         <div class="row">
@@ -182,6 +184,14 @@
             </div>
         </div>
     </div>
-    <hr />
+    <hr class="frame_hr" />
+    @*<div class="row">
+        <div class="col-md-1">
+            <button data-message="Are you sure you want to delete your resume? The information can't ber reverted!" onclick="TriggerModal(event)" type="submit" asp-route-id="@Model.Id" class="btn btn-danger">Delete</button>
+        </div>
+        <div class="col-md-1">
+            <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-warning" role="button">PDF</a>
+        </div>
+    </div>*@
 </div>
 

@@ -1,15 +1,15 @@
-﻿using CVApp.ViewModels.Education;
-using CVApp.ViewModels.Language;
-using CVApp.ViewModels.PersonalInfo;
-using CVApp.ViewModels.Work;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using static CVApp.ViewModels.Education.EducationViewModels;
+using static CVApp.ViewModels.Language.LanguageViewModels;
+using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
+using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.ViewModels.Resume
 {
     public class ResumeDisplayViewModel
-    {
+    { 
+        public int Id { get; set; }
+
         public PersonalInfoOutViewModel PersonalInfo { get; set; }
 
         public IEnumerable<EducationOutViewModel> Educations { get; set; }

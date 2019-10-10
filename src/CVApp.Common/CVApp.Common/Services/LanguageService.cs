@@ -1,26 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
 using CVApp.Models;
 using CVApp.ViewModels.Language;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using static CVApp.ViewModels.Language.LanguageViewModels;
 
 namespace CVApp.Common.Services
 {
     public class LanguageService : ILanguageService
     {
         private readonly IRepository<Language> languageRepo;
-        private readonly IRepository<Resume> resumeRepo;
+        private readonly IRepository<CVAppUser> userRepo;
+        private readonly IHttpContextAccessor accessor;
         private readonly ISanitizer sanitizer;
+        private readonly int? resumeId;
 
-        public LanguageService(IRepository<Language> languageRepo, IRepository<Resume> resumeRepo, ISanitizer sanitizer)
+        public LanguageService(IRepository<Language> languageRepo, IRepository<CVAppUser> userRepo, ISanitizer sanitizer, IHttpContextAccessor accessor)
         {
             this.languageRepo = languageRepo;
-            this.resumeRepo = resumeRepo;
+            this.userRepo = userRepo;
             this.sanitizer = sanitizer;
+            this.accessor = accessor;
+            this.resumeId = this.userRepo.All().SingleOrDefault(u => u.UserName == this.accessor.HttpContext.User.Identity.Name).ResumeId.GetValueOrDefault();
         }
 
         public async Task Delete(LanguageEditViewModel model)
@@ -39,18 +46,17 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to delete your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException($"Unable to delete language {model.Id} id.", e);
             }
         }
 
-        public async Task<LanguageEditViewModel> DeleteForm(int id, string userName)
+        public async Task<LanguageEditViewModel> EditDeleteForm(int id, string userName)
         {
-            var language = await this.languageRepo.All().Include(l => l.Resume).ThenInclude(r => r.User).SingleOrDefaultAsync(l => l.Id == id);
+            var language = await this.languageRepo.All().SingleOrDefaultAsync(e => e.Id == id);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == language.ResumeId);
+            var currentUser = user.UserName;
 
-            var user = language?.Resume.User.UserName;
-
-            if (userName != user)
+            if (userName != currentUser)
             {
                 return null;
             }
@@ -62,42 +68,12 @@ namespace CVApp.Common.Services
                 model = new LanguageEditViewModel
                 {
                     Id = language.Id,
-                    InputVM = new LanguageInputViewModel
-                    {
-                        Name = language.Name,
-                        Level = language.Level,
-                        ResumeId = language.ResumeId
-                    }
+                    Name = language.Name,
+                    Level = language.Level,
+                    ResumeId = language.ResumeId
                 };
             }
-            return model;
-        }
 
-        public async Task<LanguageEditViewModel> EditForm(int id, string userName)
-        {
-            var language = await this.languageRepo.All().Include(l => l.Resume).ThenInclude(r => r.User).SingleOrDefaultAsync(l => l.Id == id);
-            var user = language?.Resume.User.UserName;
-
-            if (userName != user)
-            {
-                return null;
-            }
-
-            LanguageEditViewModel model = null;
-
-            if (language != null)
-            {
-                model = new LanguageEditViewModel
-                {
-                    Id = language.Id,
-                    InputVM = new LanguageInputViewModel
-                    {
-                        Name = language.Name,
-                        Level = language.Level,
-                        ResumeId = language.ResumeId
-                    }
-                };
-            }
             return model;
         }
 
@@ -105,26 +81,24 @@ namespace CVApp.Common.Services
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new NullReferenceException("Invalid data");
+                throw new NullReferenceException($"{userName} is null or empty");
             }
 
             if (model == null)
             {
-                throw new NullReferenceException("Invalid data");
+                throw new NullReferenceException("Language model is null");
             }
 
-            var resume = await this.resumeRepo.All().Include("User").FirstOrDefaultAsync(u => u.User.UserName == userName);
-
-            if (resume == null)
+            if (this.resumeId == null)
             {
-                throw new InvalidOperationException("Something went wrong. Please contact site administrator for details.");
+                throw new InvalidOperationException($"Resume id is null for user {userName}.");
             }
 
             var language = new Language
             {
                 Name = this.sanitizer.Sanitize(model.Name),
                 Level = model.Level,
-                ResumeId = resume.Id
+                ResumeId = this.resumeId.Value
             };
 
             await this.languageRepo.AddAsync(language);
@@ -135,24 +109,23 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
 
         public async Task Update(LanguageEditViewModel model)
         {
-            if (model == null)
+            if (this.resumeId == null)
             {
-                throw new NullReferenceException("Invalid data");
+                throw new InvalidOperationException($"Resume id is null.");
             }
 
             var language = new Language
             {
                 Id = model.Id,
-                Name = this.sanitizer.Sanitize(model.InputVM.Name),
-                Level = model.InputVM.Level,
-                ResumeId = model.InputVM.ResumeId
+                Name = this.sanitizer.Sanitize(model.Name),
+                Level = model.Level,
+                ResumeId = this.resumeId.Value
             };
 
             try
@@ -162,8 +135,7 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Logg e
-                throw new InvalidOperationException("Unable to change your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
     }

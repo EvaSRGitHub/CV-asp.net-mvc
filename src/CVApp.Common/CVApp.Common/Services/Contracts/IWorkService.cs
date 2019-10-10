@@ -1,8 +1,5 @@
-﻿using CVApp.ViewModels.Work;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.Common.Services
 {
@@ -10,11 +7,9 @@ namespace CVApp.Common.Services
     {
         Task SaveFormData(WorkInputViewModel model, string userName);
 
-        Task<WorkEditViewModel> EditForm(int id, string userName);
+        Task<WorkEditViewModel> EditDeleteForm(int id, string userName);
 
         Task Update(WorkEditViewModel model);
-
-        Task<WorkEditViewModel> DeleteForm(int id, string userName);
 
         Task Delete(WorkEditViewModel model);
     }

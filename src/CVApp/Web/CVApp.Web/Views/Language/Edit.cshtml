@@ -1,4 +1,4 @@
-﻿@model CVApp.ViewModels.Language.LanguageEditViewModel
+﻿@model CVApp.ViewModels.Language.LanguageViewModels.LanguageEditViewModel
 
 <div class="container">
     <div class="row">
@@ -7,28 +7,27 @@
             <hr />
             <form method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
-                <input asp-for="@Model.InputVM.ResumeId" type="hidden" />
                 <div class="form-group">
-                    <label asp-for="@Model.InputVM.Name">Language Name</label>
-                    <input asp-for="@Model.InputVM.Name" class="form-control" value="@Model.InputVM.Name">
-                    <span asp-validation-for="@Model.InputVM.Name" class="text-danger"></span>
+                    <label asp-for="@Model.Name" class="font-weight-bold text-secondary"></label>
+                    <input asp-for="@Model.Name" class="form-control" value="@Model.Name">
+                    <span asp-validation-for="@Model.Name" class="text-danger"></span>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label asp-for="@Model.InputVM.Level">Level</label>
-                        <select asp-for="@Model.InputVM.Level" class="form-control languageLavel order-alpha" id="levelId">
-                            <option value="@Model.InputVM.Level">@Model.InputVM.Level</option>
+                        <label asp-for="@Model.Level" class="font-weight-bold text-secondary"></label>
+                        <select asp-for="@Model.Level" class="form-control languageLavel order-alpha" id="levelId">
+                            <option value="@Model.Level">@Model.Level</option>
                         </select>
-                        <span asp-validation-for="@Model.InputVM.Level" class="text-danger"></span>
+                        <span asp-validation-for="@Model.Level" class="text-danger"></span>
                     </div>
                 </div>
                 <hr />
-                <div class="row">
+                <div class="row justify-content-between">
                     <div class="col-md-6">
-                        <button type="submit" asp-route-Id="@Model.Id" class="btn btn-primary">Save</button>
+                        <button data-message="Are you sure you want to change this language?" onclick="TriggerModal(event)" type="submit" asp-route-id="@Model.Id" class="btn btn-success">Save</button>
                     </div>
                     <div class="col-md-auto">
-                        <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-info" role="button">Back</a>
+                        <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-dark" role="button">Back</a>
                     </div>
                 </div>
             </form>
@@ -39,7 +38,6 @@
 @section Scripts {
     <script>
     $(document).ready(function () {
-
         SetLanguageLevelDropdown();
     });
     </script>

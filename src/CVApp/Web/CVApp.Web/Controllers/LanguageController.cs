@@ -1,23 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CVApp.Common.Services;
-using CVApp.ViewModels.Language;
+﻿using CVApp.Common.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using static CVApp.ViewModels.Language.LanguageViewModels;
 
 namespace CVApp.Web.Controllers
 {
     public class LanguageController : Controller
     {
         private readonly ILanguageService languageService;
+        private readonly ILogger<LanguageController> logger;
+        private readonly IHttpContextAccessor accessor;
+        private readonly string userName;
 
-        public LanguageController(ILanguageService languageService)
+        public LanguageController(ILanguageService languageService, ILogger<LanguageController> logger, IHttpContextAccessor accessor)
         {
             this.languageService = languageService;
+            this.logger = logger;
+            this.accessor = accessor;
+            this.userName = this.accessor.HttpContext.User.Identity.Name;
         }
 
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
@@ -28,40 +33,40 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Language information. Please pay attention to the data needed and submit the form again.";
-
-                return View("Error");
+                return this.View(model);
             }
-            var username = this.User.Identity.Name;
 
             try
             {
-                await this.languageService.SaveFormData(model, username);
+                await this.languageService.SaveFormData(model, this.userName);
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {userName}");
+                return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.RedirectToAction("Display", "Resume");
         }
 
-        public async Task<IActionResult> Edit(int Id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (Id <= 0)
+            if (id <= 0)
             {
-                return NotFound();
+                this.logger.LogDebug($"User {this.userName} tries to edit language with negative {id} id.");
+                return this.NotFound();
             }
 
+            LanguageEditViewModel model;
 
-            var userName = this.User.Identity.Name;
-
-            LanguageEditViewModel model = await this.languageService.EditForm(Id, userName);
-
-            if (model == null)
+            try
             {
-                return NotFound();
+                model = await this.languageService.EditDeleteForm(id, userName);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"User {this.userName} tries to edit someone else education info.");
+                return this.NotFound();
             }
 
             return this.View(model);
@@ -72,7 +77,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Edit", "Language", new { Id = model.Id });
+                return this.View(model);
             }
 
             try
@@ -81,27 +86,31 @@ namespace CVApp.Web.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.RedirectToAction("Display", "Resume");
         }
 
-        public async Task<IActionResult>Delete(int Id)
+        public async Task<IActionResult>Delete(int id)
         {
-            if (Id <= 0)
+            if (id <= 0)
             {
-                return NotFound();
+                this.logger.LogDebug($"User {this.userName} tries to delete language with negative {id} id.");
+                return this.NotFound();
             }
 
-            var userName = this.User.Identity.Name;
+            LanguageEditViewModel model;
 
-            LanguageEditViewModel model = await this.languageService.DeleteForm(Id, userName);
-
-            if (model == null)
+            try
             {
-                return NotFound();
+                model = await this.languageService.EditDeleteForm(id, this.userName);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"User {this.userName} tries to delete null language.");
+                return this.NotFound();
             }
 
             return this.View(model);
@@ -112,7 +121,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Delete", "Language", new { Id = model.Id });
+                return this.View(model);
             }
 
             try
@@ -121,11 +130,11 @@ namespace CVApp.Web.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.RedirectToAction("Display", "Resume");
         }
     }
 }

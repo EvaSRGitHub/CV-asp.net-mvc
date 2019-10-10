@@ -1,6 +1,8 @@
 ﻿using CVApp.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace CVApp.Web.Controllers
@@ -23,6 +25,25 @@ namespace CVApp.Web.Controllers
             var model = await this.startService.GetStartInfoByUserName(userName);
 
             return this.View(model);
+        }
+
+        [AllowAnonymous]
+        public IActionResult Errors(string code)
+        {
+            HttpStatusCode sc;
+            if (!Enum.IsDefined(typeof(HttpStatusCode), code))
+            {
+                sc = HttpStatusCode.NotFound;
+            }
+            else
+            {
+                sc = Enum.Parse<HttpStatusCode>(code, true);
+            }
+
+            this.ViewData["code"] = sc.ToString();
+            this.ViewData["codeValue"] = (int)sc;
+
+            return this.View();
         }
     }
 }

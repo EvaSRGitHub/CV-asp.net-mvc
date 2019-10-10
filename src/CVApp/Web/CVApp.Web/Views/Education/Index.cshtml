@@ -1,4 +1,4 @@
-﻿@model CVApp.ViewModels.Education.EducationInputViewModel
+﻿@model CVApp.ViewModels.Education.EducationViewModels.EducationInputViewModel
 
 <div class="container">
     <div class="row">
@@ -9,72 +9,73 @@
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-element">
                     <div class="form-group">
-                        <label asp-for="Institution">Institution Name</label>
+                        <label asp-for="Institution" class="font-weight-bold text-secondary"></label>
                         <input asp-for="Institution" class="form-control" placeholder="Name of educational institution">
                         <span asp-validation-for="Institution" class="text-danger"></span>
                     </div>
                     <div class="form-row">
                         <!--DatePicker from Tempus Dominus-->
-                        <div class='col-md-4'>
+                        <div class='col-md-6'>
                             <div class="form-group">
-                                <label asp-for="FromYear">Start year</label>
-                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                                    <input asp-for="FromYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" placeholder="Year of enrolment" />
-                                    <span asp-validation-for="FromYear" class="text-danger"></span>
-                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                <label asp-for="StartDate" class="font-weight-bold text-secondary"></label>
+                                <div class="input-group date" id="datetimepickerMonthYears1" data-target-input="nearest">
+                                    <input asp-for="StartDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerMonthYears1" placeholder="mm/yyyy" />
+                                    <div class="input-group-append" data-target="#datetimepickerMonthYears1" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class='col-md-6'>
+                            <div class="form-group">
+                                <label asp-for="EndDate" class="font-weight-bold text-secondary"></label>
+                                <div class="input-group date" id="datetimepickerMonthYears2" data-target-input="nearest">
+                                    <input asp-for="EndDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerMonthYears2" placeholder="mm/yyyy" />
+                                    <div class="input-group-append" data-target="#datetimepickerMonthYears2" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class='col-md-4'>
-                            <div class="form-group">
-                                <label asp-for="ToYear">End year</label>
-                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-                                    <input asp-for="ToYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" placeholder="Year of graduation" />
-                                    <span asp-validation-for="ToYear" class="text-danger"></span>
-                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Diploma" class="font-weight-bold text-secondary"></label>
+                            <input asp-for="Diploma" class="form-control" placeholder="Master of Law">
+                            <span asp-validation-for="Diploma" class="text-danger"></span>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="GPA">GPA</label>
-                            <input asp-for="GPA" class="form-control" placeholder="GPA 5.20">
+                        <div class="form-group col-md-6">
+                            <label asp-for="GPA" class="font-weight-bold text-secondary"></label>
+                            <input asp-for="GPA"type="number" min="2.0" class="form-control" placeholder="5.60">
                             <span asp-validation-for="GPA" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Diploma">Diploma Title</label>
-                        <input asp-for="Diploma" class="form-control" placeholder="Master of Law">
-                        <span asp-validation-for="Diploma" class="text-danger"></span>
-                    </div>
                     <div class="form-group" style="padding: 1px;">
-                        <label asp-for="MainSubjects">Main Subjects</label>
-                        <textarea asp-for="MainSubjects" class="form-control myTextarea" rows="5" placeholder="Main comvered subjects"></textarea>
+                        <label asp-for="MainSubjects" class="font-weight-bold text-secondary"></label>
+                        <tinymceEditor asp-for="MainSubjects" placeholder=@(Model?.MainSubjects ?? string.Empty)></tinymceEditor>
                         <span asp-validation-for="MainSubjects" class="text-danger"></span>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label asp-for="Country">Country</label>
-                        <select asp-for="Country" class="form-control countries order-alpha" id="countryId">
-                            <option value="">Select Country</option>
-                        </select>
+                            <label asp-for="Country" class="font-weight-bold text-secondary"></label>
+                            <select asp-for="Country" class="form-control countries order-alpha" id="countryId">
+                                <option value="">Select Country</option>
+                            </select>
                             <span asp-validation-for="Country" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
-                            <label asp-for="Region">Region</label>
-                        <select asp-for="Region" class="form-control states order-alpha" id="stateId">
-                            <option value="">Select State</option>
-                        </select>
+                            <label asp-for="Region" class="font-weight-bold text-secondary"></label>
+                            <select asp-for="Region" class="form-control states order-alpha" id="stateId">
+                                <option value="">Select Region</option>
+                            </select>
                             <span asp-validation-for="Region" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
-                            <label asp-for="City">City</label>
-                        <select asp-for="City" class="form-control cities order-alpha" id="cityId">
-                            <option value="">Select City</option>
-                        </select>
+                            <label asp-for="City" class="font-weight-bold text-secondary"></label>
+                            <select asp-for="City" class="form-control cities order-alpha" id="cityId">
+                                <option value="">Select City</option>
+                            </select>
                             <span asp-validation-for="City" class="text-danger"></span>
                         </div>
                     </div>
@@ -91,13 +92,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-
-            InitTinymce();
-
-            AddDateTimePicker();
-        });
-    </script>
     <partial name="_ValidationScriptsPartial" />
 }

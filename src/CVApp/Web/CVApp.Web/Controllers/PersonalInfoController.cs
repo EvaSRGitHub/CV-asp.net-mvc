@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CVApp.Common.Services;
-using CVApp.ViewModels;
-using CVApp.ViewModels.PersonalInfo;
+﻿using CVApp.Common.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
 
 namespace CVApp.Web.Controllers
 {
@@ -14,78 +13,107 @@ namespace CVApp.Web.Controllers
     public class PersonalInfoController : Controller
     {
         private readonly IPersonalInfoService personalInfoService;
+        private readonly ILogger<PersonalInfoController> logger;
+        private readonly IHttpContextAccessor accessor;
+        private readonly string userName;
 
-        public PersonalInfoController(IPersonalInfoService personalInfoService)
+        public PersonalInfoController(IPersonalInfoService personalInfoService, ILogger<PersonalInfoController> logger, IHttpContextAccessor accessor)
         {
             this.personalInfoService = personalInfoService;
+            this.logger = logger;
+            this.accessor = accessor;
+            this.userName = this.accessor.HttpContext.User.Identity.Name;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (await this.personalInfoService.HasPersonalInfoFormFilled(userName))
+            {
+                return this.RedirectToAction("Display", "Resume");
+            }
+
+            return this.View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(PersonalInfoViewModel model)
+        public async Task<IActionResult> Index(PersonalInfoInputViewModel model)
         {
            if (!ModelState.IsValid)
             {
-                return View(model);
+                return this.View(model);
             }
 
             try
             {
-                var userName = this.User.Identity.Name;
                 await this.personalInfoService.SaveFormData(model, userName);
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"Exception happened for user {userName}");
+                return this.BadRequest();
             }
-            return RedirectToAction("Display", "Resume");
+
+            return this.RedirectToAction("Display", "Resume");
         }
 
         public async Task<IActionResult> Edit()
         {
-            var currentUser = this.User.Identity.Name;
-
-            PersonalInfoViewModel model;
+            PersonalInfoEditViewModel model;
 
             try
             {
-                model = await this.personalInfoService.EditForm(currentUser);
+                model = await this.personalInfoService.EditForm(userName);
 
-                if(model == null)
+                if (model == null)
                 {
-                    return NotFound();
+                    this.logger.LogDebug($"User {userName} tries to edit someone else personal model.");
+                    return this.NotFound();
                 }
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $" An exception happened for user {userName}");
+                return this.BadRequest();
             }
            
             return this.View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(PersonalInfoEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            try
+            {
+                await this.personalInfoService.SaveFormData(model, userName);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $" An exception happened for user {userName}");
+                return this.BadRequest();
+            }
+
+            return this.RedirectToAction("Display", "Resume");
+        }
+
        [HttpPost]
         public async Task<IActionResult> DeletePicture()
         {
-            var userName = this.User.Identity.Name;
-
             try
             {
                await this.personalInfoService.DeletePicture(userName);
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {userName}");
+                return this.BadRequest();
             }
 
-            return Json(new { Result = "OK" });
+            return this.Json(new { Result = "OK" });
         }
     }
 }

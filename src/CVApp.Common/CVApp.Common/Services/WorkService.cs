@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CVApp.Common.Repository;
+﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
 using CVApp.Models;
-using CVApp.ViewModels.Work;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.Common.Services
 {
@@ -15,18 +14,23 @@ namespace CVApp.Common.Services
     {
         private readonly IRepository<WorkExperience> workRepo;
         private readonly IRepository<CVAppUser> userRepo;
+        private readonly IHttpContextAccessor accessor;
+        //The Sanitizer remove the whole text between the script tags, together with the tags;
         private readonly ISanitizer sanitizer;
+        private readonly int? resumeId;
 
-        public WorkService(IRepository<WorkExperience> workRepo, IRepository<CVAppUser> userRepo, ISanitizer sanitizer)
+        public WorkService(IRepository<WorkExperience> workRepo, IRepository<CVAppUser> userRepo, ISanitizer sanitizer, IHttpContextAccessor accessor)
         {
             this.workRepo = workRepo;
             this.userRepo = userRepo;
             this.sanitizer = sanitizer;
+            this.accessor = accessor;
+            this.resumeId = this.userRepo.All().SingleOrDefault(u => u.UserName == this.accessor.HttpContext.User.Identity.Name).ResumeId.GetValueOrDefault();
         }
 
         public async Task Delete(WorkEditViewModel model)
         {
-            if(model == null)
+            if (model == null)
             {
                 throw new NullReferenceException("Invalid data");
             }
@@ -40,35 +44,33 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to delete your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException($"Unable to delete work model {model.Id} id.", e);
             }
         }
 
-        public async Task<WorkEditViewModel> DeleteForm(int id, string userName)
+        public async Task<WorkEditViewModel> EditDeleteForm(int id, string userName)
         {
-            var work = await this.workRepo.All().Include(w => w.Resume).ThenInclude(r => r.User).SingleOrDefaultAsync(w => w.Id == id);
+            var work = await this.workRepo.All().SingleOrDefaultAsync(w => w.Id == id);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == work.ResumeId);
+            var currentUser = user.UserName;
 
-            var user = work?.Resume.User.UserName;
-
-            if(userName != user)
+            if (userName != currentUser)
             {
                 return null;
             }
 
             WorkEditViewModel model = null;
 
-            if(work != null)
+            if (work != null)
             {
-                model = new WorkEditViewModel();
-                model.Id = work.Id;
-                model.InputVM = new WorkInputViewModel
+                model = new WorkEditViewModel
                 {
+                    Id = work.Id,
                     Company = work.Company,
                     Title = work.Title,
                     Description = work.Description,
-                    FromYear = work.FromYear,
-                    ToYear = work.ToYear.HasValue? work.ToYear.Value : (DateTime?)null,
+                    StartDate = work.StartDate,
+                    EndDate = work.EndDate.HasValue ? work.EndDate.Value : (DateTime?)null,
                     Country = work.Country,
                     Region = work.Region,
                     City = work.City,
@@ -79,57 +81,57 @@ namespace CVApp.Common.Services
             return model;
         }
 
-        public async Task<WorkEditViewModel> EditForm(int id, string userName)
-        {
-            var work = await this.workRepo.All().Include(w => w.Resume).ThenInclude(r => r.User).SingleOrDefaultAsync(w => w.Id == id);
-            var user = work?.Resume.User.UserName;
+        //public async Task<WorkEditViewModel> EditForm(int id, string userName)
+        //{
+        //    var work = await this.workRepo.All().SingleOrDefaultAsync(w => w.Id == id);
+        //    var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == work.ResumeId);
+        //    var currentUser = user.UserName;
 
-            if (userName != user)
-            {
-                return null;
-            }
+        //    if (userName != currentUser)
+        //    {
+        //        return null;
+        //    }
 
-            WorkEditViewModel model = null;
+        //    WorkEditViewModel model = null;
 
-            if(work != null)
-            {
-                model = new WorkEditViewModel
-                {
-                    Id = work.Id,
-                    InputVM = new WorkInputViewModel
-                    {
-                        Company = work.Company,
-                        Title = work.Title,
-                        Description = work.Description,
-                        FromYear = work.FromYear,
-                        ToYear = work.ToYear.HasValue? work.ToYear.Value : (DateTime?)null,
-                        Country = work.Country,
-                        Region = work.Region,
-                        City = work.City,
-                        ResumeId = work.ResumeId
-                    }
-                };
-            }
-            return model;
-        }
+        //    if (work != null)
+        //    {
+        //        model = new WorkEditViewModel
+        //        {
+        //            Id = work.Id,
+        //            InputVM = new WorkInputViewModel
+        //            {
+        //                Company = work.Company,
+        //                Title = work.Title,
+        //                Description = work.Description,
+        //                StartDate = work.StartDate,
+        //                EndDate = work.EndDate.HasValue ? work.EndDate.Value : (DateTime?)null,
+        //                Country = work.Country,
+        //                Region = work.Region,
+        //                City = work.City,
+        //                ResumeId = work.ResumeId
+        //            }
+        //        };
+        //    }
+
+        //    return model;
+        //}
 
         public async Task SaveFormData(WorkInputViewModel model, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new NullReferenceException("Invalid data");
+                throw new NullReferenceException($"{userName} is null or empty");
             }
 
-            if(model == null)
+            if (model == null)
             {
-                throw new NullReferenceException("Invalid data");
+                throw new NullReferenceException("Work model is null");
             }
 
-            var resumeId = this.userRepo.All().SingleOrDefault(u => u.UserName == userName)?.ResumeId;
-
-            if(resumeId == null)
+            if (this.resumeId == null)
             {
-                throw new InvalidOperationException("Something went wrong. Please contact site administrator for details.");
+                throw new InvalidOperationException($"Resume id is null for user {userName}.");
             }
 
             var work = new WorkExperience
@@ -137,12 +139,12 @@ namespace CVApp.Common.Services
                 Company = this.sanitizer.Sanitize(model.Company),
                 Title = this.sanitizer.Sanitize(model.Title),
                 Description = this.sanitizer.Sanitize(model.Description),
-                FromYear = model.FromYear,
-                ToYear = model.ToYear.HasValue? model.ToYear.Value : (DateTime?)null,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate.HasValue ? model.EndDate.Value : (DateTime?)null,
                 Country = model.Country,
                 Region = model.Region,
                 City = model.City,
-                ResumeId = resumeId.Value
+                ResumeId = this.resumeId.Value
             };
 
             await this.workRepo.AddAsync(work);
@@ -153,30 +155,34 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
 
         public async Task Update(WorkEditViewModel model)
         {
-            if(model == null)
+            if (model == null)
             {
                 throw new NullReferenceException("Invalid data");
+            }
+
+            if (this.resumeId == null)
+            {
+                throw new InvalidOperationException($"Resume id is null.");
             }
 
             var work = new WorkExperience
             {
                 Id = model.Id,
-                Company = this.sanitizer.Sanitize(model.InputVM.Company),
-                Title = this.sanitizer.Sanitize(model.InputVM.Title),
-                Description = this.sanitizer.Sanitize(model.InputVM.Description),
-                FromYear = model.InputVM.FromYear,
-                ToYear = model.InputVM.ToYear,
-                Country = model.InputVM.Country,
-                Region = model.InputVM.Region,
-                City = model.InputVM.City,
-                ResumeId = model.InputVM.ResumeId
+                Company = this.sanitizer.Sanitize(model.Company),
+                Title = this.sanitizer.Sanitize(model.Title),
+                Description = this.sanitizer.Sanitize(model.Description),
+                StartDate = model.StartDate,
+                EndDate = model.EndDate.HasValue ? model.EndDate.Value : (DateTime?)null,
+                Country = model.Country,
+                Region = model.Region,
+                City = model.City,
+                ResumeId = this.resumeId.Value
             };
 
             this.workRepo.Update(work);
@@ -187,8 +193,7 @@ namespace CVApp.Common.Services
             }
             catch (Exception e)
             {
-                //Log exeption
-                throw new InvalidOperationException("Unable to change your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
     }

@@ -1,18 +1,18 @@
 ﻿using CVApp.Common.Repository;
 using CVApp.Models;
-using CVApp.ViewModels.Education;
-using CVApp.ViewModels.Language;
-using CVApp.ViewModels.PersonalInfo;
 using CVApp.ViewModels.Resume;
-using CVApp.ViewModels.Work;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using static CVApp.ViewModels.Education.EducationViewModels;
+using static CVApp.ViewModels.Language.LanguageViewModels;
+using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
+using static CVApp.ViewModels.Work.WorkViewModels;
+
 
 namespace CVApp.Common.Services
 {
@@ -80,6 +80,7 @@ namespace CVApp.Common.Services
             }
 
             ResumeDisplayViewModel model = new ResumeDisplayViewModel();
+            model.Id = resume.Id;
 
             PersonalInfoOutViewModel personalInfo  = CreatePersonalInvoDisplayVM(resume);
 
@@ -131,13 +132,13 @@ namespace CVApp.Common.Services
             {
                 Company = HttpUtility.HtmlDecode(w.Company),
                 Title = HttpUtility.HtmlDecode(w.Title),
-                FromYear = w.FromYear.ToString("MM/yyyy"),
-                ToYear = w.ToYear.HasValue? w.ToYear.Value.ToString("MM/yyyy") : "",
+                StartDate = w.StartDate.ToString("MM/yyyy"),
+                EndDate = w.EndDate.HasValue? w.EndDate.Value.ToString("MM/yyyy") : "",
                 Description = HttpUtility.HtmlDecode(w.Description),
                 Country = w.Country,
                 City = w.City,
                 Id = w.Id
-            }).OrderByDescending(x => x.FromYear).ThenByDescending(x => x.ToYear).ToList();
+            }).OrderByDescending(x => x.StartDate).ThenByDescending(x => x.EndDate).ToList();
         }
 
         private List<EducationOutViewModel> CreateEducationDisplayVM(Resume resume)
@@ -145,21 +146,22 @@ namespace CVApp.Common.Services
             return resume.Education.Select(e => new EducationOutViewModel
             {
                 Institution = HttpUtility.HtmlDecode(e.Institution),
-                FromYear = e.FromYear.ToString("MM/yyyy"),
-                ToYear = e.ToYear.ToString("MM/yyyy"),
+                StartDate = e.StartDate.ToString("MM/yyyy"),
+                EndDate = e.EndDate.HasValue ? e.EndDate.Value.ToString("MM/yyyy") : "",
                 GPA = e.GPA,
                 MainSubjects = HttpUtility.HtmlDecode(e.MainSubjects),
                 Diploma = HttpUtility.HtmlDecode(e.Diploma),
                 City = e.City,
                 Country = e.Country,
                 EducationId = e.Id
-            }).OrderByDescending(x => x.FromYear).ThenByDescending(x => x.ToYear).ToList();
+            }).OrderByDescending(x => x.StartDate).ThenByDescending(x => x.EndDate).ToList();
         }
 
         private PersonalInfoOutViewModel CreatePersonalInvoDisplayVM(Resume resume)
         {
             return new PersonalInfoOutViewModel()
             {
+                Id = resume.User.Id,
                 Address = resume.User.Address,
                 Picture = resume.User.Picture,
                 FirstName = resume.User.FirstName,

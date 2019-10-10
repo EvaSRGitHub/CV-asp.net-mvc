@@ -1,94 +1,74 @@
-﻿using AutoMapper;
-using CVApp.Common.Repository;
+﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
 using CVApp.Models;
-using CVApp.ViewModels;
-using CVApp.ViewModels.PersonalInfo;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
+using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
 
 namespace CVApp.Common.Services
 {
     public class PersonalInfoService : IPersonalInfoService
     {
-        private readonly ILogger<PersonalInfoService> logger;
         private readonly IRepository<CVAppUser> userRepo;
         private readonly IRepository<Resume> resumeRepo;
+        //The Sanitizer remove the whole text between the script tags, together with the tags;
         private readonly ISanitizer sanitizer;
         private readonly ICloudinaryService cloudinaryService;
         private readonly IHostingEnvironment environment;
+        private readonly IHttpContextAccessor accessor;
 
-        public PersonalInfoService(ILogger<PersonalInfoService> logger, IRepository<CVAppUser> userRepo, IRepository<Resume> resumeRepo, ISanitizer sanitizer, ICloudinaryService cloudinaryService, IHostingEnvironment environment)
+        public PersonalInfoService(IRepository<CVAppUser> userRepo, IRepository<Resume> resumeRepo, ISanitizer sanitizer, ICloudinaryService cloudinaryService, IHostingEnvironment environment, IHttpContextAccessor accessor)
         {
             this.userRepo = userRepo;
             this.resumeRepo = resumeRepo;
             this.sanitizer = sanitizer;
             this.cloudinaryService = cloudinaryService;
             this.environment = environment;
-           // this.mapper = mapper;
-            this.logger = logger;
+            this.accessor = accessor;
         }
 
-        public async Task<PersonalInfoViewModel> EditForm(string userName)
+        public async Task<PersonalInfoEditViewModel> EditForm(string userName)
         {
             var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName);
+            var currentUser = this.accessor.HttpContext.User.Identity.Name;
 
-            if(user == null)
+            if (user == null || currentUser != userName)
             {
                 return null;
             }
 
-            PersonalInfoViewModel model = null;
-
-            try
+            PersonalInfoEditViewModel model = new PersonalInfoEditViewModel
             {
-                model = new PersonalInfoViewModel
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth.Value,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Picture = null,
-                    CurrentPicture = user.Picture,
-                    Address = user.Address,
-                    RepoProfile = user.RepoProfile,
-                    Summary = user.Summary
-                };
-            }
-            catch (Exception e)
-            {
-                //Log Error
-                return model;
-            }
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth.Value,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Picture = null,
+                CurrentPicture = user.Picture,
+                Address = user.Address,
+                RepoProfile = user.RepoProfile,
+                Summary = user.Summary
+            };
             
             return model;
         }
 
-        public async Task SaveFormData(PersonalInfoViewModel model, string userName)
+        public async Task SaveFormData(PersonalInfoBaseViewModel model, string userName)
         {
-            var resume = this.resumeRepo.All().Include("User").SingleOrDefault(u => u.User.UserName == userName);
-
-            if (model.Picture == null && resume.User.Picture == null)
-            {
-                throw new NullReferenceException("Please provide your recent photo.");
-            }
+            var personalInfo = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
 
             string filePath = string.Empty;
             string pictureUrl = string.Empty;
             string publicId = string.Empty;
 
-            if(model.Picture != null)
+            if (model.Picture != null)
             {
                 var name = model.FirstName + "_" + model.LastName + ".jpg";
                 filePath = this.environment.WebRootPath + "/tempImgs/" + name;
@@ -107,38 +87,35 @@ namespace CVApp.Common.Services
                     throw new InvalidOperationException("Something went wrong. Please try again later.");
                 }
 
-                if(resume.User.Picture != null)
+                if (personalInfo.Picture != null)
                 {
-                    this.cloudinaryService.DeleteCloudinaryImg(resume.User.CloudinaryPublicId);
+                    this.cloudinaryService.DeleteCloudinaryImg(personalInfo.CloudinaryPublicId);
                 }
 
-                resume.User.Picture = pictureUrl;
-                resume.User.CloudinaryPublicId = publicId;
+                personalInfo.Picture = pictureUrl;
+                personalInfo.CloudinaryPublicId = publicId;
 
                 File.Delete(filePath);
             }
 
-            resume.User.ResumeId = resume.Id;
-            resume.User.FirstName = this.sanitizer.Sanitize(model.FirstName);
-            resume.User.LastName = this.sanitizer.Sanitize(model.LastName);
-            resume.User.DateOfBirth = model.DateOfBirth;
-            resume.User.PhoneNumber = this.sanitizer.Sanitize(model.PhoneNumber);
-            resume.User.Email = this.sanitizer.Sanitize(model.Email);
-            resume.User.Address = this.sanitizer.Sanitize(model.Address);
-            resume.User.Summary = this.sanitizer.Sanitize(model.Summary);
-            resume.User.RepoProfile = this.sanitizer.Sanitize(model.RepoProfile);
+            personalInfo.FirstName = this.sanitizer.Sanitize(model.FirstName);
+            personalInfo.LastName = this.sanitizer.Sanitize(model.LastName);
+            personalInfo.DateOfBirth = model.DateOfBirth;
+            personalInfo.PhoneNumber = this.sanitizer.Sanitize(model.PhoneNumber);
+            personalInfo.Email = this.sanitizer.Sanitize(model.Email);
+            personalInfo.Address = this.sanitizer.Sanitize(model.Address);
+            personalInfo.Summary = this.sanitizer.Sanitize(model.Summary);
+            personalInfo.RepoProfile = this.sanitizer.Sanitize(model.RepoProfile);
 
-            this.userRepo.Update(resume.User);
+            this.userRepo.Update(personalInfo);
 
             try
             {
                 await this.userRepo.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                //Log exeption
-                throw new InvalidOperationException("Unable to save your data. Try again, and if the problem persists contact site administrator.");
+                throw new InvalidOperationException(e.Message);
             }
         }
 
@@ -162,9 +139,13 @@ namespace CVApp.Common.Services
             }
             catch (Exception)
             {
-                //Log exeption
                 throw new InvalidOperationException("Unable to delete your picture. Try again, and if the problem persists contact site administrator.");
             }
+        }
+
+        public async Task<bool> HasPersonalInfoFormFilled(string userName)
+        {
+            return await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName) == null ? false : true;
         }
     }
 }

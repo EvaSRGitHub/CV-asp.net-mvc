@@ -12,11 +12,9 @@ namespace CVApp.Common.Services
     {
         private IServiceProvider serviceProvider;
         private IConfiguration configuration;
-
         private readonly string cloudName;
         private readonly string apiKey; 
         private readonly string apiSecret;
-
         private Account account;
         private Cloudinary cloudinary; 
 
@@ -32,9 +30,9 @@ namespace CVApp.Common.Services
         }
 
         public string PublicId { get; private set; }
+
         public string Upload(string filePath)
         { 
-           
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(filePath)
@@ -43,8 +41,6 @@ namespace CVApp.Common.Services
             var uploadResult = cloudinary.Upload(uploadParams);
 
             var uploadStatus = uploadResult.StatusCode;
-
-            //TODO -see what is received if not OK and deside how to handle it.
 
             if(!uploadStatus.ToString().Equals ("OK", StringComparison.OrdinalIgnoreCase))
             {
@@ -60,8 +56,6 @@ namespace CVApp.Common.Services
 
         public string DeleteCloudinaryImg(string publicId)
         {
-            //public DelResResult DeleteResources(DelResParams parameters);
-
             var delParams = new DelResParams()
             {
                 PublicIds = new List<string>() { publicId },

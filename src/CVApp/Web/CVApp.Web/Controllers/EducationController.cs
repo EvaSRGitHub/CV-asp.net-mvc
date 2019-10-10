@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CVApp.Common.Services;
-using CVApp.ViewModels.Education;
+﻿using CVApp.Common.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using static CVApp.ViewModels.Education.EducationViewModels;
 
 namespace CVApp.Web.Controllers
 {
@@ -12,16 +13,21 @@ namespace CVApp.Web.Controllers
     public class Education : Controller
     {
         private readonly IEducationService educationService;
+        private readonly ILogger<Education> logger;
+        private readonly IHttpContextAccessor accessor;
+        private readonly string userName;
 
-        public Education(IEducationService educationService)
+        public Education(IEducationService educationService, ILogger<Education> logger, IHttpContextAccessor accessor)
         {
             this.educationService = educationService;
+            this.logger = logger;
+            this.accessor = accessor;
+            this.userName = this.accessor.HttpContext.User.Identity.Name; 
         }
 
-        // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
@@ -29,38 +35,40 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Education information. Please pay attention to the data needed and submit the form again.";
-
-                return View("Error");
+                return this.View(model);
             }
 
             try
             {
-                await this.educationService.SaveFormData(model, this.User.Identity.Name);
+                await this.educationService.SaveFormData(model, userName);
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {userName}");
+                return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + "#education");
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             if (id <= 0)
             {
-                return NotFound();
+                this.logger.LogDebug($"User {this.userName} tries to edit education info with negative {id} id.");
+                return this.NotFound();
             }
 
-            string userName = this.User.Identity.Name;
+            EducationEditViewModel model;
 
-            EducationEditViewModel model = await this.educationService.EditForm(id, userName);
-           
-            if(model == null)
+            try
             {
-                return NotFound();
+                model = await this.educationService.EditDeleteForm(id, userName);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"User {this.userName} tries to edit someone else education info.");
+                return this.NotFound();
             }
 
             return this.View(model);
@@ -71,9 +79,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Education information. Please pay attention to the data needed and submit the form again.";
-
-                return View("Error");
+                return View(model);
             }
 
             try
@@ -82,8 +88,8 @@ namespace CVApp.Web.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
             }
 
             return RedirectToAction("Display", "Resume");
@@ -93,18 +99,22 @@ namespace CVApp.Web.Controllers
         {
             if (id <= 0)
             {
-                return NotFound();
+                this.logger.LogDebug($"User {this.userName} tries to delete education info with negative {id} id.");
+                return this.NotFound();
             }
 
-            string userName = this.User.Identity.Name;
+            EducationEditViewModel model;
 
-            EducationEditViewModel model = await this.educationService.DeleteForm(id, userName);
-
-            if (model == null)
+            try
             {
-                return NotFound();
+               model  = await this.educationService.EditDeleteForm(id, this.userName);
             }
-
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"User {this.userName} tries to delete null education model.");
+                return this.NotFound();
+            }
+            
             return this.View(model);
         }
 
@@ -113,9 +123,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Education information.";
-
-                return View("Error");
+                return View(model);
             }
 
             try
@@ -124,8 +132,8 @@ namespace CVApp.Web.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
             }
 
             return RedirectToAction("Display", "Resume");

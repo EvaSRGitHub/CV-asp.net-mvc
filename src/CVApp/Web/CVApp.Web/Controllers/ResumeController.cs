@@ -1,33 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CVApp.Common.Services;
+﻿using CVApp.Common.Services;
 using CVApp.ViewModels.Resume;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System;
+using System.Threading.Tasks;
 
 namespace CVApp.Web.Controllers
 {
     public class ResumeController : Controller
     {
         private readonly IResumeService resumeService;
+        private readonly IHttpContextAccessor accessor;
+        private readonly string userName;
 
-        public ResumeController(IResumeService resumeService)
+        public ResumeController(IResumeService resumeService, IHttpContextAccessor accessor)
         {
             this.resumeService = resumeService;
+            this.accessor = accessor;
+            this.userName = this.accessor.HttpContext.User.Identity.Name;
         }
 
         public async Task<IActionResult> Display()
         {
-            var userName = this.User.Identity.Name;
-
             ResumeDisplayViewModel model;
 
             try
             {
-                model = await this.resumeService.DisplayResume(userName);
+                model = await this.resumeService.DisplayResume(this.userName);
             }
             catch (Exception e)
             {

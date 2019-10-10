@@ -14,10 +14,9 @@ namespace CVApp.Models
         public string Diploma { get; set; }
 
         [Required]
-        public DateTime FromYear { get; set; }
+        public DateTime StartDate { get; set; }
 
-        [Required]
-        public DateTime ToYear { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Required]
         public double GPA { get; set; }

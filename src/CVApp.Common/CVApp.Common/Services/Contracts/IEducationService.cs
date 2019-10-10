@@ -1,8 +1,5 @@
-﻿using CVApp.ViewModels.Education;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using static CVApp.ViewModels.Education.EducationViewModels;
 
 namespace CVApp.Common.Services
 {
@@ -10,11 +7,11 @@ namespace CVApp.Common.Services
     {
         Task SaveFormData(EducationInputViewModel model, string userName);
 
-        Task<EducationEditViewModel> EditForm(int id, string userName);
+        Task<EducationEditViewModel> EditDeleteForm(int id, string userName);
 
         Task Update(EducationEditViewModel model);
 
-        Task<EducationEditViewModel> DeleteForm(int id, string userName);
+        //Task<EducationEditViewModel> DeleteForm(int id, string userName);
 
         Task Delete(EducationEditViewModel model);
     }

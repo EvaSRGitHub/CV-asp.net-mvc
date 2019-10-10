@@ -1,8 +1,5 @@
-﻿using CVApp.ViewModels.Language;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using static CVApp.ViewModels.Language.LanguageViewModels;
 
 namespace CVApp.Common.Services
 {
@@ -10,11 +7,9 @@ namespace CVApp.Common.Services
     {
         Task SaveFormData(LanguageInputViewModel model, string userName);
 
-        Task<LanguageEditViewModel> EditForm(int id, string userName);
+        Task<LanguageEditViewModel> EditDeleteForm(int id, string userName);
 
         Task Update(LanguageEditViewModel model);
-
-        Task<LanguageEditViewModel> DeleteForm(int id, string userName);
 
         Task Delete(LanguageEditViewModel model);
     }

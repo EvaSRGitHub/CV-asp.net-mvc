@@ -1,7 +1,4 @@
-﻿@model CVApp.ViewModels.PersonalInfo.PersonalInfoViewModel
-
-@{
-}
+﻿@model CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels.PersonalInfoInputViewModel
 
 <div class="container">
     <div class="row">
@@ -13,42 +10,49 @@
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label asp-for="FirstName">First name</label>
+                        <label asp-for="FirstName"></label>
                         <input asp-for="FirstName" class="form-control" placeholder="Ivan, Ana-Maria">
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
-                        <label asp-for="LastName">Last name</label>
+                        <label asp-for="LastName"></label>
                         <input asp-for="LastName" class="form-control" placeholder="Petrov, Mc'Dugal">
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label asp-for="Email">Email</label>
+                        <label asp-for="Email"></label>
                         <input asp-for="Email" class="form-control" placeholder="Email">
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-6">
-                        <label asp-for="PhoneNumber">Phone Number</label>
+                        <label asp-for="PhoneNumber"></label>
                         <input asp-for="PhoneNumber" class="form-control" placeholder="+359/888888888">
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
+                
                 <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label asp-for="DateOfBirth">Date of birth</label>
-                        <!--the input format is dd/MM/yyyy-->
-                        <input asp-for="DateOfBirth" type="date" class="form-control">
-                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    <div class='col-md-4'>
+                        <div class="form-group">
+                            <label asp-for="DateOfBirth"></label>
+                            <div class="input-group date" id="datetimepickerDate" data-target-input="nearest">
+                                <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDate" placeholder="mm/dd/yyyy" />
+                                <div class="input-group-append" data-target="#datetimepickerDate" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label asp-for="Picture">Picture</label>
-                        <input asp-for="Picture" type="file" class="form-control-file" placeholder="Paste your picture here">
+                        <label asp-for="Picture"></label>
+                        <input asp-for="Picture" type="file" class="form-control-file" placeholder="Uplode your picture here">
                         <span asp-validation-for="Picture" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-4">
-                        <label asp-for="RepoProfile">Portfolio</label>
+                        <label asp-for="RepoProfile"></label>
                         <input asp-for="RepoProfile" type="url" class="form-control" placeholder="Paste your portfolio url here">
                         <span asp-validation-for="RepoProfile" class="text-danger"></span>
                     </div>
@@ -60,7 +64,7 @@
                 </div>
                 <div class="form-group" style="padding: 1px;">
                     <label asp-for="Summary">Summary</label>
-                    <textarea id="mytextarea" asp-for="Summary" class="form-control myTextarea" rows="5" placeholder="Brief nerrative about yourself"></textarea>
+                    <tinymceEditor asp-for="Summary" placeholder=@(Model?.Summary ?? string.Empty)></tinymceEditor>
                     <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
                 <div class="row">
@@ -74,10 +78,5 @@
 </div>
 
 @section Scripts {
-   <script>
-       $(document).ready(function () {
-           InitTinymce();
-       });
-    </script>
     <partial name="_ValidationScriptsPartial" />
 }

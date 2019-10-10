@@ -1,29 +1,28 @@
-﻿@model CVApp.ViewModels.Work.WorkEditViewModel
+﻿@model CVApp.ViewModels.Work.WorkViewModels.WorkEditViewModel
 
 <div class="container">
     <div class="row">
         <div class="col-md-8 offset-2">
-            <h2>Work</h2>
+            <h2>Delete Work</h2>
             <hr />
             <form method="post">
-                <input asp-for="@Model.InputVM.ResumeId" type=hidden value="@Model.InputVM.ResumeId" />
                 <div class="form-element">
                     <div class="form-group">
-                        <label asp-for="@Model.InputVM.Company">Employer</label>
-                        <input asp-for="@Model.InputVM.Company" class="form-control" value="@Model.InputVM.Company" readonly>
+                        <label asp-for="@Model.Company" class="font-weight-bold text-secondary"></label>
+                        <input asp-for="@Model.Company" class="form-control" value="@Model.Company" readonly>
                     </div>
                     <div class="form-group">
-                        <label asp-for="@Model.InputVM.Title">Job Title</label>
-                        <input asp-for="@Model.InputVM.Title" class="form-control" value="@Model.InputVM.Title" readonly>
+                        <label asp-for="@Model.Title" class="font-weight-bold text-secondary"></label>
+                        <input asp-for="@Model.Title" class="form-control" value="@Model.Title" readonly>
                     </div>
                     <div class="form-row">
                         <!--DatePicker from Tempus Dominus-->
                         <div class='col-md-6'>
                             <div class="form-group">
-                                <label asp-for="@Model.InputVM.FromYear">Start year</label>
-                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                                    <input asp-for="@Model.InputVM.FromYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" value="" readonly/>
-                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                <label asp-for="@Model.StartDate" class="font-weight-bold text-secondary"></label>
+                                <div class="input-group date" id="datetimepickerMonthYears1" data-target-input="nearest">
+                                    <input asp-for="@Model.StartDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerMonthYears1" value="@Model.StartDate.ToString("MM/yyyy")" readonly />
+                                    <div class="input-group-append" data-target="#datetimepickerMonthYears1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
@@ -31,10 +30,10 @@
                         </div>
                         <div class='col-md-6'>
                             <div class="form-group">
-                                <label asp-for="@Model.InputVM.ToYear">End year</label>
-                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-                                    <input asp-for="@Model.InputVM.ToYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" value="" readonly/>
-                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                <label asp-for="@Model.EndDate" class="font-weight-bold text-secondary"></label>
+                                <div class="input-group date" id="datetimepickerMonthYears2" data-target-input="nearest">
+                                    <input asp-for="@Model.EndDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerMonthYears2" value=@(Model.EndDate.HasValue ? Model.EndDate.Value.ToString("MM/yyyy") : string.Empty) readonly />
+                                    <div class="input-group-append" data-target="#datetimepickerMonthYears2" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
@@ -42,31 +41,31 @@
                         </div>
                     </div>
                     <div class="form-group" style="padding: 1px;">
-                        <label asp-for="@Model.InputVM.Description">Job Description</label>
-                        <textarea asp-for="@Model.InputVM.Description" class="form-control myTextarea" rows="5"></textarea>
+                        <label asp-for="@Model.Description" class="font-weight-bold text-secondary"></label>
+                        <tinymceEditor asp-for="@Model.Description" placeholder="@Model.Description"></tinymceEditor>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label asp-for="@Model.InputVM.Country">Country</label>
-                            <input asp-for="@Model.InputVM.Country" class="form-control" value="@Model.InputVM.Country" readonly />
+                            <label asp-for="@Model.Country" class="font-weight-bold text-secondary"></label>
+                            <input asp-for="@Model.Country" class="form-control" value="@Model.Country" readonly />
                         </div>
                         <div class="form-group col-md-6">
-                            <label asp-for="@Model.InputVM.Region">Region</label>
-                           <input asp-for="@Model.InputVM.Region" class="form-control" value="@Model.InputVM.Region" readonly/>
+                            <label asp-for="@Model.Region" class="font-weight-bold text-secondary"></label>
+                            <input asp-for="@Model.Region" class="form-control" value="@Model.Region" readonly />
                         </div>
                         <div class="form-group col-md-6">
-                            <label asp-for="@Model.InputVM.City">City</label>
-                            <input asp-for="@Model.InputVM.City" class="form-control" value="@Model.InputVM.City" readonly />
+                            <label asp-for="@Model.City" class="font-weight-bold text-secondary"></label>
+                            <input asp-for="@Model.City" class="form-control" value="@Model.City" readonly />
                         </div>
                     </div>
                     <hr />
                 </div>
-                <div class="row">
+                <div class="row justify-content-between">
                     <div class="col-md-6">
-                        <button data-message="Are you sure you want to delete this work info." onclick="TriggerModal(event)" type="submit" asp-route-Id="@Model.Id" class="btn btn-danger">Delete</button>
+                        <button data-message="Are you sure you want to delete this work info." onclick="TriggerModal(event)" type="submit" asp-route-id="@Model.Id" class="btn btn-danger">Delete</button>
                     </div>
                     <div class="col-md-auto">
-                        <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-info" role="button">Back</a>
+                        <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-dark" role="button">Back</a>
                     </div>
                 </div>
             </form>
@@ -76,26 +75,9 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-
-            InitTinymce();
-
-            AddDateTimePicker();
-        });
-
-   setTimeout(function () {
-        tinymce.activeEditor.setMode('readonly');
+        setTimeout(function () {
+            tinymce.activeEditor.setMode('readonly');
         }, 500);
-
-    setTimeout(function () {$('#datetimepicker7').datetimepicker(
-        'date', moment('@Model.InputVM.FromYear.ToString("MM/YYYY")', 'MM/YYYY')
-    ); $('#datetimepicker7').attr('readonly','readonly');}, 500);
-
-    setTimeout(function () {$('#datetimepicker8').datetimepicker(
-        'date', moment('@Model.InputVM.ToYear.HasValue?@Model.InputVM.ToYear.Value.ToString("MM/YYYY"): ""', 'MM/YYYY')
-    );
-        $('#datetimepicker8').attr('readonly','readonly');
-    }, 500);
     </script>
 }
 

@@ -1,98 +1,89 @@
-﻿@model CVApp.ViewModels.Work.WorkInputViewModel
+﻿@model CVApp.ViewModels.Work.WorkViewModels.WorkInputViewModel
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 offset-2">
-                <h2>Work</h2>
-                <hr />
-                <form method="post" >
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="form-element">
-                        <div class="form-group">
-                            <label asp-for="Company">Employer</label>
-                            <input asp-for="Company" class="form-control" placeholder="Name of the employer">
-                            <span asp-validation-for="Company" class="text-danger"></span>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <h2>Work</h2>
+            <hr />
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-element">
+                    <div class="form-group">
+                        <label asp-for="Company" class="font-weight-bold text-secondary"></label>
+                        <input asp-for="Company" class="form-control" placeholder="Name of the employer">
+                        <span asp-validation-for="Company" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title" class="font-weight-bold text-secondary"></label>
+                        <input asp-for="Title" class="form-control" placeholder="Job title">
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-row">
+                        <!--DatePicker from Tempus Dominus-->
+                        <div class='col-md-6'>
+                            <div class="form-group">
+                                <label asp-for="StartDate" class="font-weight-bold text-secondary"></label>
+                                <div class="input-group date" id="datetimepickerMonthYears1" data-target-input="nearest">
+                                    <input asp-for="StartDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerMonthYears1" placeholder="mm/yyyy" />
+                                    <div class="input-group-append" data-target="#datetimepickerMonthYears1" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Title">Job Title</label>
-                            <input asp-for="Title" class="form-control" placeholder="Job title">
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                        <div class="form-row">
-                            <!--DatePicker from Tempus Dominus-->
-                            <div class='col-md-6'>
-                                <div class="form-group">
-                                    <label asp-for="FromYear">Start year</label>
-                                    <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                                        <input asp-for="FromYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" placeholder="Start of employment" />
-                                        <span asp-validation-for="FromYear" class="text-danger"></span>
-                                        <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
+                        <div class='col-md-6'>
+                            <div class="form-group">
+                                <label asp-for="EndDate" class="font-weight-bold text-secondary"></label>
+                                <div class="input-group date" id="datetimepickerMonthYears2" data-target-input="nearest">
+                                    <input asp-for="EndDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerMonthYears2" placeholder="mm/yyyy" />
+                                    <div class="input-group-append" data-target="#datetimepickerMonthYears2" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class='col-md-6'>
-                                <div class="form-group">
-                                    <label asp-for="ToYear">End year</label>
-                                    <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-                                        <input asp-for="ToYear" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" placeholder="End of employment" />
-                                        <span asp-validation-for="ToYear" class="text-danger"></span>
-                                        <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group" style="padding: 1px;">
-                            <label asp-for="Description">Job Description</label>
-                            <textarea asp-for="Description" class="form-control myTextarea" rows="5" placeholder="Main job responsibilities and achievements"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Country">Country</label>
-                                <select asp-for="Country" class="form-control countries order-alpha" id="countryId">
-                                    <option value="">Select Country</option>
-                                </select>
-                                <span asp-validation-for="Country" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Region">Region</label>
-                                <select asp-for="Region" class="form-control states order-alpha" id="stateId">
-                                    <option value="">Select State</option>
-                                </select>
-                                <span asp-validation-for="Region" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="City">City</label>
-                                <select asp-for="City" class="form-control cities order-alpha" id="cityId">
-                                    <option value="">Select City</option>
-                                </select>
-                                <span asp-validation-for="City" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <hr />
-                    </div>
-                    <div class="row justify-content-end">
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="form-group" style="padding: 1px;">
+                        <label asp-for="Description" class="font-weight-bold text-secondary"></label>
+                        <tinymceEditor asp-for="Description" placeholder=@(Model?.Description ?? string.Empty)></tinymceEditor>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Country" class="font-weight-bold text-secondary"></label>
+                            <select asp-for="Country" class="form-control countries order-alpha" id="countryId">
+                                <option value="">Select Country</option>
+                            </select>
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Region" class="font-weight-bold text-secondary"></label>
+                            <select asp-for="Region" class="form-control states order-alpha" id="stateId">
+                                <option value="">Select Region</option>
+                            </select>
+                            <span asp-validation-for="Region" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="City" class="font-weight-bold text-secondary"></label>
+                            <select asp-for="City" class="form-control cities order-alpha" id="cityId">
+                                <option value="">Select City</option>
+                            </select>
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-
-            InitTinymce();
-
-            AddDateTimePicker();
-        });
-    </script>
     <partial name="_ValidationScriptsPartial" />
 }

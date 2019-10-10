@@ -1,26 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CVApp.Common.Services;
-using CVApp.ViewModels.Work;
+﻿using CVApp.Common.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.Web.Controllers
 {
     public class WorkController : Controller
     {
         private readonly IWorkService workService;
+        private readonly ILogger<WorkController> logger;
+        private readonly IHttpContextAccessor accessor;
+        private readonly string userName;
 
-        public WorkController(IWorkService workService)
+        public WorkController(IWorkService workService, ILogger<WorkController> logger, IHttpContextAccessor accessor)
         {
             this.workService = workService;
+            this.logger = logger;
+            this.accessor = accessor;
+            this.userName = this.accessor.HttpContext.User.Identity.Name;
         }
 
-        // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
@@ -28,40 +33,40 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Error"] = "An error occurred with your Work information. Please pay attention to the data needed and submit the form again.";
-
-                return View("Error");
+                return this.View(model);
             }
-
-            var username = this.User.Identity.Name;
 
             try
             {
-                await this.workService.SaveFormData(model, username);
+                await this.workService.SaveFormData(model, userName);
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {userName}");
+                return this.BadRequest();
             }
            
-            return RedirectToAction("Display", "Resume");
+            return this.RedirectToAction("Display", "Resume");
         }
 
-        public async Task<IActionResult> Edit(int Id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if(Id <= 0)
+            if (id <= 0)
             {
-                return NotFound();
+                this.logger.LogDebug($"User {userName} tries to edit work info with negative {id} id.");
+                return this.NotFound();
             }
 
-            var userName = this.User.Identity.Name;
+            WorkEditViewModel model;
 
-            WorkEditViewModel model = await this.workService.EditForm(Id, userName);
-
-            if(model == null)
+             try
             {
-                return NotFound();
+                model = await this.workService.EditDeleteForm(id, userName);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"User {userName} tries to edit someone else work model.");
+                return this.NotFound();
             }
 
             return this.View(model);
@@ -72,7 +77,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Edit", "Language", new { Id = model.Id });
+                return this.View(model);
             }
 
             try
@@ -81,27 +86,31 @@ namespace CVApp.Web.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return this.View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {userName}");
+                return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.RedirectToAction("Display", "Resume");
         }
 
-        public async Task<IActionResult> Delete(int Id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if(Id <= 0)
+            if (id <= 0)
             {
-                return NotFound();
+                this.logger.LogDebug($"User {userName} tries to delete work info with negative {id} id.");
+                return this.NotFound();
             }
 
-            var userName = this.User.Identity.Name;
+            WorkEditViewModel model;
 
-            WorkEditViewModel model = await this.workService.DeleteForm(Id, userName);
-
-            if(model == null)
+            try
             {
-                return NotFound();
+                model = await this.workService.EditDeleteForm(id, userName);
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"User {userName} tries to delete null work model.");
+                return this.NotFound();
             }
 
             return this.View(model);
@@ -112,7 +121,7 @@ namespace CVApp.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Delete", "Language", new { Id = model.Id });
+                return this.View(model);
             }
 
             try
@@ -121,11 +130,11 @@ namespace CVApp.Web.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
-                return View("Error");
+                this.logger.LogDebug(e, $"An exception happened for user {userName}");
+                return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.RedirectToAction("Display", "Resume");
         }
     }
 }
