@@ -1,0 +1,22 @@
+﻿@{ 
+    var id = this.ViewData["id"];
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <h2>What do you want to do?</h2>
+            <hr />
+            <div class="row justify-content-between">
+                <div class="col-md-4">
+                    <a asp-action="Edit" asp-controller="Skill" asp-route-id="@id" class="btn btn-success">Edit Skill</a>
+                </div>
+                <div class="col-md-4">
+                    <a asp-action="Delete" asp-controller="Skill" asp-route-id="@id" class="btn btn-danger">Delete Skill</a>
+                </div>
+                <div class="col-md-auto">
+                    <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-dark" role="button">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

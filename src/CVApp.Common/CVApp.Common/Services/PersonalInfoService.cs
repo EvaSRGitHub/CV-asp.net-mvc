@@ -1,5 +1,6 @@
 ﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
+using CVApp.Common.Services.Contracts;
 using CVApp.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

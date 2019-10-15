@@ -1,5 +1,6 @@
 ﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
+using CVApp.Common.Services.Contracts;
 using CVApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -81,43 +82,7 @@ namespace CVApp.Common.Services
             return model;
         }
 
-        //public async Task<WorkEditViewModel> EditForm(int id, string userName)
-        //{
-        //    var work = await this.workRepo.All().SingleOrDefaultAsync(w => w.Id == id);
-        //    var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == work.ResumeId);
-        //    var currentUser = user.UserName;
-
-        //    if (userName != currentUser)
-        //    {
-        //        return null;
-        //    }
-
-        //    WorkEditViewModel model = null;
-
-        //    if (work != null)
-        //    {
-        //        model = new WorkEditViewModel
-        //        {
-        //            Id = work.Id,
-        //            InputVM = new WorkInputViewModel
-        //            {
-        //                Company = work.Company,
-        //                Title = work.Title,
-        //                Description = work.Description,
-        //                StartDate = work.StartDate,
-        //                EndDate = work.EndDate.HasValue ? work.EndDate.Value : (DateTime?)null,
-        //                Country = work.Country,
-        //                Region = work.Region,
-        //                City = work.City,
-        //                ResumeId = work.ResumeId
-        //            }
-        //        };
-        //    }
-
-        //    return model;
-        //}
-
-        public async Task SaveFormData(WorkInputViewModel model, string userName)
+        public async Task<int> SaveFormData(WorkInputViewModel model, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -148,15 +113,19 @@ namespace CVApp.Common.Services
             };
 
             await this.workRepo.AddAsync(work);
+            int id = default(int);
 
             try
             {
                 await this.workRepo.SaveChangesAsync();
+                id = work.Id;
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(e.Message);
             }
+
+            return id;
         }
 
         public async Task Update(WorkEditViewModel model)

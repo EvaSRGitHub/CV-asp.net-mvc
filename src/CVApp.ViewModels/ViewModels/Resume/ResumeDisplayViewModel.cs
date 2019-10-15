@@ -2,6 +2,7 @@
 using static CVApp.ViewModels.Education.EducationViewModels;
 using static CVApp.ViewModels.Language.LanguageViewModels;
 using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
+using static CVApp.ViewModels.Skill.SkillViewModels;
 using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.ViewModels.Resume
@@ -17,5 +18,7 @@ namespace CVApp.ViewModels.Resume
         public IEnumerable<WorkOutViewModel> Employments { get; set; }
 
         public IEnumerable<LanguageOutViewModel> Languages { get; set; }
+
+        public IEnumerable<SkillOutViewModel> Skills { get; set; }
     }
 }

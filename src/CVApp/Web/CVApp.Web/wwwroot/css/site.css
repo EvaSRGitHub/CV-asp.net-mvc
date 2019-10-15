@@ -1,5 +1,7 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿dl, em{
+    font-size: 1.2em;
+}
+
 .frame{
     padding: 3em;
     border: solid 1px;
@@ -9,16 +11,32 @@ for details on configuring this project to bundle and minify static web assets. 
     border-bottom: double;
 }
 
+.badge-font-size{
+    font-size: 1em;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
 }
+.title-link:hover{
+    text-decoration: none;
+}
+
+.toTop {
+    position: fixed;
+    bottom: 1.5em;
+    float: right;
+    right: 1em;
+    font-size: 3em;
+    color: #e2dada;
+}
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CVApp.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using CVApp.Web.Models;
+using System.Diagnostics;
 
 namespace CVApp.Web.Controllers
 {

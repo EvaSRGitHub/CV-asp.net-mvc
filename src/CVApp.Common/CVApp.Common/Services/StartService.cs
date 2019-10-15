@@ -1,4 +1,5 @@
 ﻿using CVApp.Common.Repository;
+using CVApp.Common.Services.Contracts;
 using CVApp.Models;
 using CVApp.ViewModels.Start;
 using Microsoft.EntityFrameworkCore;

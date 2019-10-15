@@ -1,4 +1,4 @@
-﻿using CVApp.Common.Services;
+﻿using CVApp.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

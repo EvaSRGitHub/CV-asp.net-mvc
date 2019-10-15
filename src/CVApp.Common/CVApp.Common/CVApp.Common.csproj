@@ -8,6 +8,8 @@
     <PackageReference Include="AutoMapper" Version="8.1.0" />
     <PackageReference Include="CloudinaryDotNet" Version="1.8.0" />
     <PackageReference Include="HtmlSanitizer" Version="4.0.210" />
+    <PackageReference Include="IronPdf" Version="2019.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
   </ItemGroup>

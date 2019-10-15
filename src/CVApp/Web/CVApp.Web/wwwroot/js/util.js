@@ -20,7 +20,7 @@
 
     $('#exampleModalCenter').modal('show');
 
-    $('#close').click(() => { ('#exampleModalCenter').modal('hide');});
+    $('#close').click(() => { $('#exampleModalCenter').modal('hide');});
 
     $('#delete').click(() => {
         $(button).removeAttr('onclick');

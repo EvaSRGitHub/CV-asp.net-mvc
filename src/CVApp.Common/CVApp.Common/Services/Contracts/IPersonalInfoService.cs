@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
 
-namespace CVApp.Common.Services
+namespace CVApp.Common.Services.Contracts
 {
     public interface IPersonalInfoService
     {

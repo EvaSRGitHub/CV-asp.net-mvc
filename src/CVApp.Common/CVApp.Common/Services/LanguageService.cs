@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CVApp.Common.Repository;
+﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
+using CVApp.Common.Services.Contracts;
 using CVApp.Models;
-using CVApp.ViewModels.Language;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using static CVApp.ViewModels.Language.LanguageViewModels;
 
 namespace CVApp.Common.Services
@@ -77,7 +75,7 @@ namespace CVApp.Common.Services
             return model;
         }
 
-        public async Task SaveFormData(LanguageInputViewModel model, string userName)
+        public async Task<int> SaveFormData(LanguageInputViewModel model, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -102,15 +100,19 @@ namespace CVApp.Common.Services
             };
 
             await this.languageRepo.AddAsync(language);
+            int id = default(int);
 
             try
             {
                 await this.languageRepo.SaveChangesAsync();
+                id = language.Id;
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(e.Message);
             }
+
+            return id;
         }
 
         public async Task Update(LanguageEditViewModel model)

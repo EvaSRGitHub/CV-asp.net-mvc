@@ -4,194 +4,157 @@
 
     Dictionary<string, int> percents = new Dictionary<string, int>()
 {
-        { "Beginner/A1", 10},
-        { "Elementary/A2", 20},
-        { "Intermediate/B1", 30 },
-        { "Upper Intermediate/B2", 50},
-        { "Advanced/C1", 80 },
-        { "Proficient/C2", 100 }
-    };
+{ "Beginner/A1", 10},
+{ "Elementary/A2", 20},
+{ "Intermediate/B1", 30 },
+{ "Upper Intermediate/B2", 50},
+{ "Advanced/C1", 80 },
+{ "Proficient/C2", 100 }
+};
 
     var percent = 0;
 }
 
 <div class="container frame">
-    <div class="col-md-12">
-        <h1 class="text-center">Resume</h1>
-        <hr />
-    </div>
-    <!--Personal Info-->
-    <div class="personalInfo">
-        <div class="row">
-            <div>
-                <h2>Personal Info</h2>
-                <hr />
-            </div>
-        </div>
-        <div class="row">
-            <div>
-                <div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-sm-6 col-md-5">
-                                    <div class="about-img">
-                                        <img src="@Model.PersonalInfo.Picture" class="img-fluid rounded b-shadow-a" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <div class="about-info">
-                                        @{name = Model.PersonalInfo.FirstName + " " + Model.PersonalInfo.LastName;}
-                                        <p><b>Name: </b> <span>@name</span></p>
-                                        <p><b>Date of birth: </b> <span>@Model.PersonalInfo.DateOfBirth</span></p>
-                                        <p><b>Email: </b> <span>@Model.PersonalInfo.Email</span></p>
-                                        <p><b>Phone: </b> <span>@Model.PersonalInfo.PhoneNumber</span></p>
-                                        <p><b>Address: </b> <span>@Model.PersonalInfo.Address</span></p>
-                                        <p><a href="@Model.PersonalInfo.RepoProfile">View my portfolio</a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="about-me pt-4 pt-md-0">
-                                <div class="title-box-2">
-                                    <h5 class="title-left">
-                                        About me
-                                    </h5>
-                                </div>
-                                <p class="lead">
-                                    @Html.Raw(Model.PersonalInfo.Summary)
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <a asp-controller="PersonalInfo" asp-action="Edit" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr class="frame_hr" />
-    <!--Education-->
-    <div id="education">
-        <div class="row">
-            <div>
-                <h2>Education</h2>
-                <hr />
-            </div>
-        </div>
-
-        @foreach (var item in Model.Educations)
-        {
-            <div class="row">
-                <div class="col-12">
-                    <h4>@item.Institution - @item.Country, @item.City <small class="text-muted"><em>(@item.StartDate - @item.EndDate)</em></small></h4>
-                    <h5>@item.Diploma (GPA - @item.GPA)</h5>
-                    <div>@Html.Raw(item.MainSubjects)</div>
-                    <div class="row justify-content-between">
-                        <div class="col-md-6">
-                            <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
-                        </div>
-                        <div class="col-md-auto">
-                            <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-            </div>
-        }
-    </div>
-    <hr class="frame_hr" />
-    <!--Work-->
-    <div class="work">
-        <div class="row">
-            <div>
-                <h2>Work experience</h2>
-                <hr />
-            </div>
-        </div>
-        @foreach (var item in Model.Employments)
-        {
-            <dl class="row">
-                <dt class="col-sm-3">Employer</dt>
-                <dd class="col-sm-9">@item.Company, @item.Country, @item.City</dd>
-                <dt class="col-sm-3">Job Title</dt>
-                <dd class="col-sm-9">@item.Title</dd>
-                <dt class="col-sm-3">Employment Period</dt>
-                <dd class="col-sm-9">@item.StartDate - @item.EndDate</dd>
-                <dt class="col-sm-3">Job Description</dt>
-                <dd class="col-sm-9">@Html.Raw(item.Description)</dd>
-            </dl>
-            <div class="row justify-content-between">
-                <div class="col-md-6">
-                    <a asp-controller="Work" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
-                </div>
-                <div class="col-md-auto">
-                    <a asp-controller="Work" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
-                </div>
-            </div>
+    <form method="post">
+        <div class="col-md-12">
+            <h1 class="text-center test">Resume</h1>
             <hr />
-        }
-    </div>
-    <hr class="frame_hr" />
-    <!--Skills-->
-    <div class="skills">
-        <div class="row">
-            <div>
-                <h2>Skills</h2>
-                <hr />
-            </div>
         </div>
-    </div>
-    <hr class="frame_hr" />
-    <!--Languages-->
-    <div class="languages">
-        <div class="row">
-            <div>
-                <h2>Languages</h2>
-                <hr />
-            </div>
-        </div>
-
-        @foreach (var item in Model.Languages)
-        {
-            { percent = percents[item.Level]; }
-            <label>@item.Name - @item.Level</label>
-            <div class="progress mb-3">
-                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
-            </div>
-            <div class="row justify-content-between">
-                <div class="col-md-6">
-                    <a asp-controller="Language" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+        <!--Personal Info-->
+        <div id="personalInfo">
+            <h2 class="mb-3">Personal Info</h2>
+            <div class="row">
+                <div class="col-sm-3 col-md-3">
+                    <div class="about-img">
+                        <img src="@Model.PersonalInfo.Picture" class="img-fluid rounded b-shadow-a" alt="">
+                    </div>
                 </div>
-                <div class="col-md-auto">
-                    <a asp-controller="Language" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+                <div class="col-sm-6 col-md-6">
+                    <div class="about-info">
+                        @{name = Model.PersonalInfo.FirstName + " " + Model.PersonalInfo.LastName;}
+                        <p><b>Name: </b> <span>@name</span></p>
+                        <p><b>Date of birth: </b> <span>@Model.PersonalInfo.DateOfBirth</span></p>
+                        <p><b>Email: </b> <span>@Model.PersonalInfo.Email</span></p>
+                        <p><b>Phone: </b> <span>@Model.PersonalInfo.PhoneNumber</span></p>
+                        <p><b>Address: </b> <span>@Model.PersonalInfo.Address</span></p>
+                        <p><a href="@Model.PersonalInfo.RepoProfile">View my portfolio</a></p>
+                    </div>
                 </div>
             </div>
-        }
-
-    </div>
-    <hr class="frame_hr" />
-    <!--Certificates-->
-    <div class="certificates">
-        <div class="row">
-            <div>
-                <h2>Certificates</h2>
-                <hr />
+            <h5 class="title-left">About me</h5>
+            <div class="row pt-2 pl-3">
+                @Html.Raw(Model.PersonalInfo.Summary)
+            </div>
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <a asp-controller="PersonalInfo" asp-action="Edit" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                </div>
             </div>
         </div>
-    </div>
-    <hr class="frame_hr" />
-    @*<div class="row">
-        <div class="col-md-1">
-            <button data-message="Are you sure you want to delete your resume? The information can't ber reverted!" onclick="TriggerModal(event)" type="submit" asp-route-id="@Model.Id" class="btn btn-danger">Delete</button>
+        <hr class="frame_hr" />
+        <!--Education-->
+        <div id="education">
+            <h2 class="mb-3"><a asp-action="Index" asp-controller="Education" class="title-link">Education</a></h2>
+            @for (int i = 0; i < Model.Educations.Count(); i++)
+            {
+                var item = Model.Educations.ToList()[i];
+                <dl id="@item.EducationId" class="row">
+                    <dt class="col-sm-3">Institution</dt>
+                    <dd class="col-sm-9">@item.Institution, @item.Country, @item.City<small class="text-muted"><em>(@item.StartDate - @item.EndDate)</em></small></dd>
+                    <dt class="col-sm-3">Diploma</dt>
+                    <dd class="col-sm-9">@item.Diploma (GPA - @item.GPA)</dd>
+                    <dt class="col-sm-3">Main Subjects</dt>
+                    <dd class="col-sm-9">@Html.Raw(item.MainSubjects)</dd>
+                </dl>
+                <div class="row justify-content-end">
+                    <div class="col-auto">
+                        <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                    </div>
+                    <div class="col-auto">
+                        <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+                    </div>
+                </div>
+                if (i != Model.Educations.Count() - 1)
+                {
+                    <hr />
+                }
+            }
         </div>
-        <div class="col-md-1">
-            <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-warning" role="button">PDF</a>
+        <hr class="frame_hr" />
+        <!--Work-->
+        <div id="work">
+            <h2 class="mb-3"><a asp-action="Index" asp-controller="Work" class="title-link">Work experience</a></h2>
+            @for (int i = 0; i < Model.Employments.Count(); i++)
+            {
+                var item = Model.Employments.ToList()[i];
+                <dl id="@item.Id" class="row">
+                    <dt class="col-sm-3">Employer</dt>
+                    <dd class="col-sm-9">@item.Company, @item.Country, @item.City</dd>
+                    <dt class="col-sm-3">Job Title</dt>
+                    <dd class="col-sm-9">@item.Title</dd>
+                    <dt class="col-sm-3">Employment Period</dt>
+                    <dd class="col-sm-9">@item.StartDate - @item.EndDate</dd>
+                    <dt class="col-sm-3">Job Description</dt>
+                    <dd class="col-sm-9">@Html.Raw(item.Description)</dd>
+                </dl>
+                <div class="row justify-content-end">
+                    <div class="col-auto">
+                        <a asp-controller="Work" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                    </div>
+                    <div class="col-auto">
+                        <a asp-controller="Work" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+                    </div>
+                </div>
+                if (i != Model.Employments.Count() - 1)
+                {
+                    <hr />
+                }
+            }
         </div>
-    </div>*@
+        <hr class="frame_hr" />
+        <!--Skills-->
+        <div id="skills">
+            <h2 class="mb-3"><a asp-action="Index" asp-controller="Skill" class="title-link">Skills</a></h2>
+            <div class="row">
+                @foreach (var item in Model.Skills)
+                {
+                    <a id="@item.Id" asp-action="EditDelete" asp-controller="Skill" asp-route-id="@item.Id" class="badge badge-secondary badge-font-size mb-3 mx-1" data-toggle="tooltip" data-placement="top" title="Click to edit or delete skill">@item.Name</a>
+                }
+            </div>
+        </div>
+        <hr class="frame_hr" />
+        <!--Languages-->
+        <div id="languages">
+            <h2 class="mb-3"><a asp-action="Index" asp-controller="Language" class="title-link">Languages</a></h2>
+            @foreach (var item in Model.Languages)
+            {
+                <div id="@item.Id" class="col-12">
+                    @{ percent = percents[item.Level]; }
+                    <label>@item.Name - @item.Level</label>
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
+                    </div>
+                    <div class="row justify-content-end mb-3">
+                        <div class="col-auto">
+                            <a asp-controller="Language" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                        </div>
+                        <div class="col-auto">
+                            <a asp-controller="Language" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <hr class="frame_hr" />
+        <div class="row mt-5">
+            <div class="col-md-1">
+                <button asp-action="Delete" asp-controller="Resume" data-message="Are you sure you want to delete your resume? The information can't ber reverted!" onclick="TriggerModal(event)" asp-route-id="@Model.Id" class="btn btn-danger">Delete</button>
+            </div>
+            <div class="col-md-1">
+                <a asp-action="GetPdf" asp-controller="Dashboard" class="btn btn-warning" role="button">PDF</a>
+            </div>
+        </div>
+    </form>
 </div>
 

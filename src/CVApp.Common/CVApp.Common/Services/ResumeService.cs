@@ -1,16 +1,19 @@
 ﻿using CVApp.Common.Repository;
+using CVApp.Common.Services.Contracts;
 using CVApp.Models;
 using CVApp.ViewModels.Resume;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using static CVApp.ViewModels.Education.EducationViewModels;
 using static CVApp.ViewModels.Language.LanguageViewModels;
 using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
+using static CVApp.ViewModels.Skill.SkillViewModels;
 using static CVApp.ViewModels.Work.WorkViewModels;
 
 
@@ -27,6 +30,31 @@ namespace CVApp.Common.Services
             this.logger = logger;
             this.resumeRepo = resumeRepo;
             this.userRepo = userRepo;
+        }
+
+        public async Task Delete(int id, string userName)
+        {
+            var resume = await this.resumeRepo.GetByIdAsync(id);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName);
+
+            if (resume.Id != user.ResumeId)
+            {
+                throw new InvalidOperationException($"User {userName} doesn't has access to delete resume {resume.Id} id.");
+            }
+
+            try
+            {
+                this.resumeRepo.Delete(resume);
+                await this.resumeRepo.SaveChangesAsync();
+
+
+
+                await this.CreateResume(user.Id);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(e.Message);
+            }
         }
 
         public async Task CreateResume(string userId)
@@ -72,6 +100,7 @@ namespace CVApp.Common.Services
                 .Include("Education")
                 .Include("Works")
                 .Include("Languages")
+                .Include("Skills")
                 .AsNoTracking().SingleOrDefaultAsync(u => u.User.UserName == userName);
 
             if (resume == null)
@@ -113,7 +142,25 @@ namespace CVApp.Common.Services
 
             model.Languages = languageCollection;
 
+            var skillsCollection = new List<SkillOutViewModel>();
+
+            if (resume.Skills.Count() > 0)
+            {
+                skillsCollection = CreateSkillDisplayVM(resume);
+            }
+
+            model.Skills = skillsCollection;
+
             return model;
+        }
+
+        private List<SkillOutViewModel> CreateSkillDisplayVM(Resume resume)
+        {
+            return resume.Skills.Select(s => new SkillOutViewModel
+            {
+                Name = s.Name,
+                Id = s.Id
+            }).ToList();
         }
 
         private List<LanguageOutViewModel> CreateLanguageDisplayVM(Resume resume)
@@ -128,7 +175,7 @@ namespace CVApp.Common.Services
 
         private List<WorkOutViewModel> CreateWorkDisplayVM(Resume resume)
         {
-            return resume.Works.Select(w => new WorkOutViewModel
+            return resume.Works.OrderByDescending(w => w.StartDate).ThenByDescending(w => w.EndDate).Select(w => new WorkOutViewModel
             {
                 Company = HttpUtility.HtmlDecode(w.Company),
                 Title = HttpUtility.HtmlDecode(w.Title),
@@ -138,12 +185,12 @@ namespace CVApp.Common.Services
                 Country = w.Country,
                 City = w.City,
                 Id = w.Id
-            }).OrderByDescending(x => x.StartDate).ThenByDescending(x => x.EndDate).ToList();
+            }).ToList();
         }
 
         private List<EducationOutViewModel> CreateEducationDisplayVM(Resume resume)
         {
-            return resume.Education.Select(e => new EducationOutViewModel
+            return resume.Education.OrderByDescending(e => e.StartDate).ThenByDescending(e => e.EndDate).Select(e => new EducationOutViewModel
             {
                 Institution = HttpUtility.HtmlDecode(e.Institution),
                 StartDate = e.StartDate.ToString("MM/yyyy"),
@@ -154,7 +201,7 @@ namespace CVApp.Common.Services
                 City = e.City,
                 Country = e.Country,
                 EducationId = e.Id
-            }).OrderByDescending(x => x.StartDate).ThenByDescending(x => x.EndDate).ToList();
+            }).ToList();
         }
 
         private PersonalInfoOutViewModel CreatePersonalInvoDisplayVM(Resume resume)

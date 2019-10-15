@@ -6442,33 +6442,33 @@ button.bg-dark:focus {
 
 @media print {
   .d-print-none {
-    display: none !important;
+    display: none 
   }
   .d-print-inline {
-    display: inline !important;
+    display: inline 
   }
   .d-print-inline-block {
-    display: inline-block !important;
+    display: inline-block 
   }
   .d-print-block {
-    display: block !important;
+    display: block 
   }
   .d-print-table {
-    display: table !important;
+    display: table 
   }
   .d-print-table-row {
-    display: table-row !important;
+    display: table-row 
   }
   .d-print-table-cell {
-    display: table-cell !important;
+    display: table-cell 
   }
   .d-print-flex {
-    display: -ms-flexbox !important;
-    display: flex !important;
+    display: -ms-flexbox 
+    display: flex 
   }
   .d-print-inline-flex {
-    display: -ms-inline-flexbox !important;
-    display: inline-flex !important;
+    display: -ms-inline-flexbox 
+    display: inline-flex 
   }
 }
 

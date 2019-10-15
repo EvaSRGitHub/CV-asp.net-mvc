@@ -1,4 +1,5 @@
 ﻿using CVApp.Common.Services;
+using CVApp.Common.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,9 +39,10 @@ namespace CVApp.Web.Controllers
                 return this.View(model);
             }
 
+            int id = default(int);
             try
             {
-                await this.educationService.SaveFormData(model, userName);
+                id = await this.educationService.SaveFormData(model, userName);
             }
             catch (Exception e)
             {
@@ -48,7 +50,7 @@ namespace CVApp.Web.Controllers
                 return this.BadRequest();
             }
 
-            return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + "#education");
+            return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + $"#{id}");
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -92,7 +94,7 @@ namespace CVApp.Web.Controllers
                 return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + $"#{model.Id}");
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -136,7 +138,7 @@ namespace CVApp.Web.Controllers
                 return this.BadRequest();
             }
 
-            return RedirectToAction("Display", "Resume");
+            return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + "#education");
         }
     }
 }

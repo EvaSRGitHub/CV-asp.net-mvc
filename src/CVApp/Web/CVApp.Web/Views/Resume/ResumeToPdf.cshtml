@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CVApp.Web</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    @*<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <link rel="stylesheet" media="all" href='../wwwroot/lib/bootstrap/dist/css/bootstrap.css' />*@
+    <link rel="stylesheet" media="all" href="../wwwroot/css/print.css" />
+</head>
+<body>
+    @model CVApp.ViewModels.Resume.ResumeDisplayViewModel
+    @{
+        var name = "";
+
+        Dictionary<string, int> percents = new Dictionary<string, int>()
+{
+{ "Beginner/A1", 10},
+{ "Elementary/A2", 20},
+{ "Intermediate/B1", 30 },
+{ "Upper Intermediate/B2", 50},
+{ "Advanced/C1", 80 },
+{ "Proficient/C2", 100 }
+};
+
+        var percent = 0;
+
+    }
+
+    <div class="container">
+        <div class="col-xs-12">
+            <h1 style="text-align:center">Resume</h1>
+            <hr />
+        </div>
+        <!--Personal Info-->
+        <div id="personalInfo">
+            <h2 class="mb-3">Personal Info</h2>
+            <div style="overflow:hidden;">
+                <div class="mr-5" style="float:left;">
+                    <img src="@Model.PersonalInfo.Picture" style="width: 200px;">
+                </div>
+                <div class="ml-5" style="float:left; width:65%">
+                    @{name = Model.PersonalInfo.FirstName + " " + Model.PersonalInfo.LastName;}
+                    <p><b>Name: </b> <span>@name</span></p>
+                    <p><b>Date of birth: </b> <span>@Model.PersonalInfo.DateOfBirth</span></p>
+                    <p><b>Email: </b> <span>@Model.PersonalInfo.Email</span></p>
+                    <p><b>Phone: </b> <span>@Model.PersonalInfo.PhoneNumber</span></p>
+                    <p><b>Address: </b> <span>@Model.PersonalInfo.Address</span></p>
+                    <p><a href="@Model.PersonalInfo.RepoProfile">View my portfolio</a></p>
+                </div>
+            </div>
+            <h5 class="title-left">About me</h5>
+            <div class="wrapper">
+                @Html.Raw(Model.PersonalInfo.Summary)
+            </div>
+        </div>
+        <hr class="frame-hr" />
+        <!--Education-->
+        <div id="education">
+            <h2 class="mb-3">Education</h2>
+
+            @for (int i = 0; i < Model.Educations.Count(); i++)
+            {
+                var item = Model.Educations.ToList()[i];
+                <dl id="@item.EducationId">
+                    <dt>Institution</dt>
+                    <dd class="col-9">@item.Institution, @item.Country, @item.City<small class="text-muted"><em>(@item.StartDate - @item.EndDate)</em></small></dd>
+                    <dt>Diploma</dt>
+                    <dd class="col-9">@item.Diploma (GPA - @item.GPA)</dd>
+                    <dt>Main Subjects</dt>
+                    <dd class="col-9">@Html.Raw(item.MainSubjects)</dd>
+                </dl>
+
+                if (i != Model.Educations.Count() - 1)
+                {
+                    <hr />
+                }
+            }
+        </div>
+        <hr class="frame-hr" />
+        <!--Work-->
+        <div id="work">
+            <h2 class="mb-3">Work experience</h2>
+
+            @for (int i = 0; i < Model.Employments.Count(); i++)
+            {
+                var item = Model.Employments.ToList()[i];
+                <dl id="@item.Id">
+                    <dt>Employer</dt>
+                    <dd>@item.Company, @item.Country, @item.City</dd>
+                    <dt>Job Title</dt>
+                    <dd>@item.Title</dd>
+                    <dt>Employment Period</dt>
+                    <dd>@item.StartDate - @item.EndDate</dd>
+                    <dt>Job Description</dt>
+                    <dd>@Html.Raw(item.Description)</dd>
+                </dl>
+
+                if (i != Model.Employments.Count() - 1)
+                {
+                    <hr />
+                }
+            }
+        </div>
+        <hr class="frame-hr" />
+        <!--Skills-->
+        <div id="skills">
+            <h2 class="mb-3">Skills</h2>
+
+            <div class="wrapper">
+                @foreach (var item in Model.Skills)
+                {
+                    <a class="badge badge-secondary badge-font-size m-1">@item.Name</a>
+                }
+            </div>
+        </div>
+        <hr class="frame-hr" />
+        <!--Languages-->
+        <div id="languages">
+            <h2 class="mb-3">Languages</h2>
+            <div class="wrapper">
+                @foreach (var item in Model.Languages)
+                {
+                    <div id="@item.Id" class="col-10">
+                        @{ percent = percents[item.Level]; }
+                        <label>@item.Name - @item.Level</label>
+                        <div class="progress mb-3">
+                            <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <hr class="frame-hr" />
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
+

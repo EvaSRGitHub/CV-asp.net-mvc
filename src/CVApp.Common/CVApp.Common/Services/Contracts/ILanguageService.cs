@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using static CVApp.ViewModels.Language.LanguageViewModels;
 
-namespace CVApp.Common.Services
+namespace CVApp.Common.Services.Contracts
 {
     public interface ILanguageService
     {
-        Task SaveFormData(LanguageInputViewModel model, string userName);
+        Task<int> SaveFormData(LanguageInputViewModel model, string userName);
 
         Task<LanguageEditViewModel> EditDeleteForm(int id, string userName);
 

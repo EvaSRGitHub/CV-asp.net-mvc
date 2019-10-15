@@ -1,5 +1,6 @@
 ﻿using CVApp.Common.Repository;
 using CVApp.Common.Sanitizer;
+using CVApp.Common.Services.Contracts;
 using CVApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -82,7 +83,7 @@ namespace CVApp.Common.Services
             return model;
         }
 
-        public async Task SaveFormData(EducationInputViewModel model, string userName)
+        public async Task<int> SaveFormData(EducationInputViewModel model, string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -114,15 +115,18 @@ namespace CVApp.Common.Services
             };
 
             await this.educationRepo.AddAsync(education);
-
+            int id = default(int);
             try
             {
-                await this.educationRepo.SaveChangesAsync();
+               await this.educationRepo.SaveChangesAsync();
+                id = education.Id;
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException(e.Message);
             }
+
+            return id;
         }
 
         public async Task Update(EducationEditViewModel model)

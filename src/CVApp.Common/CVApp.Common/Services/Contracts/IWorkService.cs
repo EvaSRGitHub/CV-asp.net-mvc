@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using static CVApp.ViewModels.Work.WorkViewModels;
 
-namespace CVApp.Common.Services
+namespace CVApp.Common.Services.Contracts
 {
     public interface IWorkService
     {
-        Task SaveFormData(WorkInputViewModel model, string userName);
+        Task<int> SaveFormData(WorkInputViewModel model, string userName);
 
         Task<WorkEditViewModel> EditDeleteForm(int id, string userName);
 
