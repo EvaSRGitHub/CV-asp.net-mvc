@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using static CVApp.ViewModels.Skill.SkillViewModels;
 
 namespace CVApp.Common.Services.Contracts
@@ -12,5 +13,7 @@ namespace CVApp.Common.Services.Contracts
         Task Update(SkillEditViewModel model);
 
         Task Delete(SkillEditViewModel model);
+
+        Task<IEnumerable<SkillOutViewModel>> GetSkillsInfo(int resumeId);
     }
 }

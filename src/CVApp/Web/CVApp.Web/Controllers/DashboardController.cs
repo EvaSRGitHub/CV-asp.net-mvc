@@ -29,8 +29,7 @@ namespace CVApp.Web.Controllers
         
         public async Task<IActionResult> GetPdf()
         {
-            
-            var model = await this.resumeService.DisplayResume(this.User.Identity.Name);
+            var model = this.resumeService.DisplayResume();
             var htmlData = await this.viewRenderService.RenderToStringAsync("~/Views/Resume/ResumeToPdf.cshtml", model);
             var basePath = this.environment.WebRootPath;
             var fileContents = this.htmlToPdfConverter.Convert(basePath, htmlData, Common.GeneratePDF.FormatType.A4, Common.GeneratePDF.OrientationType.Portrait);

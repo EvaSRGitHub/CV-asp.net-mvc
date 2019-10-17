@@ -5,12 +5,14 @@ namespace CVApp.Common.Services.Contracts
 {
     public interface IPersonalInfoService
     {
-        Task SaveFormData(PersonalInfoBaseViewModel model, string userName);
+        Task SaveFormData(PersonalInfoBaseViewModel model);
 
-        Task<PersonalInfoEditViewModel> EditForm(string userName);
+        Task<PersonalInfoEditViewModel> EditForm(int resumeId);
 
-        Task DeletePicture(string userName);
+        Task DeletePicture();
 
-        Task<bool> HasPersonalInfoFormFilled(string userName);
+        Task<bool> HasPersonalInfoFormFilled();
+
+        Task<PersonalInfoOutViewModel> GetPersonalInfo(int resumeId);
     }
 }

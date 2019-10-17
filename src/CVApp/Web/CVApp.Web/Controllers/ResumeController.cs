@@ -23,13 +23,22 @@ namespace CVApp.Web.Controllers
             this.userName = this.accessor.HttpContext.User.Identity.Name;
         }
 
-        public async Task<IActionResult> Display()
+        public IActionResult Start()
+        {
+            var userName = this.User.Identity.Name;
+
+            var model = this.resumeService.GetStartInfo();
+
+            return this.View(model);
+        }
+
+        public IActionResult Display()
         {
             ResumeDisplayViewModel model;
 
             try
             {
-                model = await this.resumeService.DisplayResume(this.userName);
+                model = this.resumeService.DisplayResume();
             }
             catch (Exception e)
             {
@@ -45,7 +54,7 @@ namespace CVApp.Web.Controllers
         {
             try
             {
-                await this.resumeService.Delete(id, userName);
+                await this.resumeService.Delete(id);
             
             }
             catch (Exception e)
@@ -59,10 +68,10 @@ namespace CVApp.Web.Controllers
         }
 
 
-        public async Task<IActionResult> ResumeToPDF()
-        {
-            var model = await this.resumeService.DisplayResume(this.User.Identity.Name);
-            return this.View(model);
-        }
+        //public IActionResult ResumeToPDF()
+        //{
+        //    var model = this.resumeService.DisplayResume();
+        //    return this.View(model);
+        //}
     }
 }

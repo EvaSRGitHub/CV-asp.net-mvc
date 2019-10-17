@@ -13,7 +13,6 @@ namespace CVApp.Models
             this.Education = new HashSet<Education>();
             this.Works = new HashSet<WorkExperience>();
             this.Skills = new HashSet<Skill>();
-            this.Certificates = new HashSet<Certificate>();
             this.Languages = new HashSet<Language>();
         }
 
@@ -25,8 +24,6 @@ namespace CVApp.Models
         public IEnumerable<Education> Education { get; set; }
 
         public IEnumerable<WorkExperience> Works { get; set; }
-
-        public IEnumerable<Certificate> Certificates { get; set; }
 
         public IEnumerable<Language> Languages { get; set; }
 

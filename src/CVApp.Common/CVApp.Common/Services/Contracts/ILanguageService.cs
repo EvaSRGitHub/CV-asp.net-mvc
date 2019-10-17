@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using static CVApp.ViewModels.Language.LanguageViewModels;
 
 namespace CVApp.Common.Services.Contracts
@@ -12,5 +13,7 @@ namespace CVApp.Common.Services.Contracts
         Task Update(LanguageEditViewModel model);
 
         Task Delete(LanguageEditViewModel model);
+
+        Task<IEnumerable<LanguageOutViewModel>> GetLanguageInfo(int resumeId);
     }
 }

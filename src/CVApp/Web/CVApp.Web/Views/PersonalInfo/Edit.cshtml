@@ -1,4 +1,5 @@
 ﻿@model CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels.PersonalInfoEditViewModel
+@using System.Globalization
 
 <div class="container">
     <div class="row">
@@ -37,7 +38,7 @@
                         <div class="form-group">
                             <label asp-for="DateOfBirth" class="font-weight-bold text-secondary"></label>
                             <div class="input-group date" id="datetimepickerDate" data-target-input="nearest">
-                                <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDate" value="@Model.DateOfBirth.ToShortDateString()" />
+                                <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDate" value="@Model.DateOfBirth.ToString("d", CultureInfo.InvariantCulture)" />
                                 <div class="input-group-append" data-target="#datetimepickerDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -78,7 +79,7 @@
                     <span asp-validation-for="Summary" class="text-danger"></span>
                 </div>
                 <div class="row justify-content-between">
-                    <button data-message="Are you sure you want to change this peronal info." onclick="TriggerModal(event)" type="submit" class="btn btn-success" asp-route-id="@Model.Id">Save</button>
+                    <button data-message="Are you sure you want to change this peronal info." onclick="TriggerModal(event)" type="submit" class="btn btn-success" asp-route-id="@Model.ResumeId">Save</button>
                     <div class="col-md-auto">
                         <a href="javascript:void(0);" onclick="history.go(-1);" class="btn btn-dark" role="button">Back</a>
                     </div>

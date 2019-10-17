@@ -22,6 +22,7 @@ namespace CVApp.ViewModels.PersonalInfo
             public string LastName { get; set; }
 
             [Required(ErrorMessage = "Please enter your date of birth"), Display(Name = "Date of Birth")]
+            [DataType(DataType.Date)]
             public DateTime DateOfBirth { get; set; }
 
             [Required(ErrorMessage = "Please enter your address")]
@@ -33,15 +34,12 @@ namespace CVApp.ViewModels.PersonalInfo
             public string Email { get; set; }
 
             [Required(ErrorMessage = "Please enter you phone number"), Display(Name = "Phone Number")]
-            [RegularExpression(@"[+]?\d{7,}", ErrorMessage = "Phone number must contains only digits with minimum length of 7 (ex. 359288111, 359888999333444)")]
+            [RegularExpression(@"^[\+|\-\/\d ]{7,}$", ErrorMessage = "Phone number may contains digits and symbols (+, /, -, ) with minimum length of 7 (ex. +359/288111, +359/888 999 333)")]
             public string PhoneNumber { get; set; }
 
             public string Summary { get; set; }
 
             public IFormFile Picture { get; set; }
-
-            [Display(Name = "Current Picture")]
-            public string CurrentPicture { get; set; }
 
             [Required(ErrorMessage = "Please provide url to your projects"), Display(Name = "Portfolio")]
             public string RepoProfile { get; set; }
@@ -65,7 +63,7 @@ namespace CVApp.ViewModels.PersonalInfo
         public class PersonalInfoEditViewModel : PersonalInfoBaseViewModel
         {
             [Required]
-            public string Id { get; set; }
+            public int ResumeId { get; set; }
 
             [Display(Name = "Current Picture")]
             public string CurrentPicture { get; set; }
@@ -92,6 +90,8 @@ namespace CVApp.ViewModels.PersonalInfo
             public string Picture { get; set; }
 
             public string RepoProfile { get; set; }
+
+            public int ResumeId { get; set; }
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static CVApp.ViewModels.Education.EducationViewModels;
 
@@ -139,6 +140,29 @@ namespace CVApp.Web.Controllers
             }
 
             return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + "#education");
+        }
+
+        public async Task<IActionResult> Display(int id)
+        {
+            IEnumerable<EducationOutViewModel> educInfo;
+
+            try
+            {
+                educInfo = await this.educationService.GetEducationInfo(id);
+
+                if (educInfo == null)
+                {
+                    this.logger.LogDebug($"Can't display education info for user {this.userName}.");
+                    return this.NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
+            }
+
+            return this.View(educInfo);
         }
     }
 }

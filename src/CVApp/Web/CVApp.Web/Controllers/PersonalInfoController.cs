@@ -27,7 +27,7 @@ namespace CVApp.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (await this.personalInfoService.HasPersonalInfoFormFilled(userName))
+            if (await this.personalInfoService.HasPersonalInfoFormFilled())
             {
                 return this.RedirectToAction("Display", "Resume");
             }
@@ -45,7 +45,7 @@ namespace CVApp.Web.Controllers
 
             try
             {
-                await this.personalInfoService.SaveFormData(model, userName);
+                await this.personalInfoService.SaveFormData(model);
             }
             catch (Exception e)
             {
@@ -56,13 +56,13 @@ namespace CVApp.Web.Controllers
             return this.RedirectToAction("Display", "Resume");
         }
 
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(int resumeId)
         {
             PersonalInfoEditViewModel model;
 
             try
             {
-                model = await this.personalInfoService.EditForm(userName);
+                model = await this.personalInfoService.EditForm(resumeId);
 
                 if (model == null)
                 {
@@ -89,7 +89,7 @@ namespace CVApp.Web.Controllers
 
             try
             {
-                await this.personalInfoService.SaveFormData(model, userName);
+                await this.personalInfoService.SaveFormData(model);
             }
             catch (Exception e)
             {
@@ -105,7 +105,7 @@ namespace CVApp.Web.Controllers
         {
             try
             {
-               await this.personalInfoService.DeletePicture(userName);
+               await this.personalInfoService.DeletePicture();
             }
             catch (Exception e)
             {
@@ -114,6 +114,29 @@ namespace CVApp.Web.Controllers
             }
 
             return this.Json(new { Result = "OK" });
+        }
+
+        public async Task<IActionResult> Display(int id)
+        {
+            PersonalInfoOutViewModel personalInfo;
+
+            try
+            {
+                personalInfo = await this.personalInfoService.GetPersonalInfo(id);
+
+                if (personalInfo == null)
+                {
+                    this.logger.LogDebug($"Can't display personal info for user {this.userName}.");
+                    return this.NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
+            }
+
+            return this.View(personalInfo);
         }
     }
 }

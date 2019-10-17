@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading;
 using IViewRenderService = CVApp.Common.GeneratePDF.Contracts.IViewRenderService;
 using ViewRenderService = CVApp.Common.GeneratePDF.ViewRenderService;
 
@@ -75,7 +76,6 @@ namespace CVApp.Web
             services.AddScoped<ISanitizer, HtmlSanitizerAdapter>();
             services.AddScoped<IPersonalInfoService, PersonalInfoService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-            services.AddScoped<IStartService, StartService>();
             services.AddScoped<IResumeService, ResumeService>();
             services.AddScoped<IEducationService, EducationService>();
             services.AddScoped<IWorkService, WorkService>();
@@ -84,8 +84,9 @@ namespace CVApp.Web
             services.AddScoped<ISkillService, SkillService>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
             services.AddScoped<IHtmlToPdfConverter, HtmlToPdfConverter>();
-           // services.AddScoped<IIronHtmlToPdfConverter, IronHtmlToPdfConverter>();
             services.AddLogging();
+
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

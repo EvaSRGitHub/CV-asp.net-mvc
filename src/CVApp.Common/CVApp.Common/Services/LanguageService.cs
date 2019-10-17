@@ -2,9 +2,11 @@
 using CVApp.Common.Sanitizer;
 using CVApp.Common.Services.Contracts;
 using CVApp.Models;
+using CVApp.ViewModels.Language;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static CVApp.ViewModels.Language.LanguageViewModels;
@@ -71,6 +73,30 @@ namespace CVApp.Common.Services
                     ResumeId = language.ResumeId
                 };
             }
+
+            return model;
+        }
+
+        public async Task<IEnumerable<LanguageOutViewModel>> GetLanguageInfo(int resumeId)
+        {
+            if (this.resumeId != resumeId)
+            {
+                return null;
+            }
+
+            var lang = await this.languageRepo.All().Where(l => l.ResumeId == this.resumeId).ToListAsync();
+
+            if (lang.Count == 0)
+            {
+                return null;
+            }
+
+            var model = lang.Select(l => new LanguageOutViewModel
+            {
+                Name = l.Name,
+                Level = l.Level,
+                Id = l.Id
+            }).ToList();
 
             return model;
         }

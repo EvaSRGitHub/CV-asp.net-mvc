@@ -2,6 +2,7 @@
 using CVApp.Common.Sanitizer;
 using CVApp.Common.Services.Contracts;
 using CVApp.Models;
+using CVApp.ViewModels.PersonalInfo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using static CVApp.ViewModels.PersonalInfo.PersonalInfoViewModels;
 
 namespace CVApp.Common.Services
@@ -22,6 +24,7 @@ namespace CVApp.Common.Services
         private readonly ICloudinaryService cloudinaryService;
         private readonly IHostingEnvironment environment;
         private readonly IHttpContextAccessor accessor;
+        private readonly int? resumeId;
 
         public PersonalInfoService(IRepository<CVAppUser> userRepo, IRepository<Resume> resumeRepo, ISanitizer sanitizer, ICloudinaryService cloudinaryService, IHostingEnvironment environment, IHttpContextAccessor accessor)
         {
@@ -31,39 +34,39 @@ namespace CVApp.Common.Services
             this.cloudinaryService = cloudinaryService;
             this.environment = environment;
             this.accessor = accessor;
+            this.resumeId = this.userRepo.All().SingleOrDefault(u => u.UserName == this.accessor.HttpContext.User.Identity.Name).ResumeId.GetValueOrDefault();
         }
 
-        public async Task<PersonalInfoEditViewModel> EditForm(string userName)
+        public async Task<PersonalInfoEditViewModel> EditForm(int resumeId)
         {
-            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName);
-            var currentUser = this.accessor.HttpContext.User.Identity.Name;
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == this.resumeId);
 
-            if (user == null || currentUser != userName)
+            if (user == null || this.resumeId != resumeId)
             {
                 return null;
             }
 
             PersonalInfoEditViewModel model = new PersonalInfoEditViewModel
             {
-                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.Value,
+                DateOfBirth = user.DateOfBirth.HasValue? user.DateOfBirth.Value : DateTime.Now,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Picture = null,
                 CurrentPicture = user.Picture,
                 Address = user.Address,
                 RepoProfile = user.RepoProfile,
-                Summary = user.Summary
+                Summary = user.Summary,
+                ResumeId = this.resumeId.Value
             };
             
             return model;
         }
 
-        public async Task SaveFormData(PersonalInfoBaseViewModel model, string userName)
+        public async Task SaveFormData(PersonalInfoBaseViewModel model)
         {
-            var personalInfo = this.userRepo.All().SingleOrDefault(u => u.UserName == userName);
+            var personalInfo = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == this.resumeId);
 
             string filePath = string.Empty;
             string pictureUrl = string.Empty;
@@ -120,9 +123,9 @@ namespace CVApp.Common.Services
             }
         }
 
-        public async Task DeletePicture(string userName)
+        public async Task DeletePicture()
         {
-            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName);
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == this.resumeId);
 
             if (user.Picture != null)
             {
@@ -144,9 +147,42 @@ namespace CVApp.Common.Services
             }
         }
 
-        public async Task<bool> HasPersonalInfoFormFilled(string userName)
+        public async Task<bool> HasPersonalInfoFormFilled()
         {
-            return await this.userRepo.All().SingleOrDefaultAsync(u => u.UserName == userName) == null ? false : true;
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == this.resumeId);
+            return user.FirstName == null ? false : true;
+        }
+
+        public async Task<PersonalInfoOutViewModel> GetPersonalInfo(int resumeId)
+        {
+            if (this.resumeId != resumeId)
+            {
+                return null;
+            }
+
+            var user = await this.userRepo.All().SingleOrDefaultAsync(u => u.ResumeId == this.resumeId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var model = new PersonalInfoOutViewModel()
+            {
+                Id = user.Id,
+                Address = user.Address,
+                Picture = user.Picture,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                DateOfBirth = user.DateOfBirth.HasValue ? user.DateOfBirth.Value.ToShortDateString() : null,
+                RepoProfile = user.RepoProfile,
+                Summary = HttpUtility.HtmlDecode(user.Summary),
+                ResumeId = this.resumeId.Value
+            };
+
+            return model;
         }
     }
 }

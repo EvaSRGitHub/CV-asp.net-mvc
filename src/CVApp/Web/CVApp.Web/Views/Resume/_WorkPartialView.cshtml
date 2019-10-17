@@ -1,0 +1,29 @@
+﻿<div id="work">
+    <h2 class="mb-3"><a asp-action="Index" asp-controller="Work" class="title-link" data-toggle="tooltip" data-placement="top" title="Click to create new work info">Work experience</a></h2>
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var item = Model[i];
+        <dl id="@item.Id" class="row">
+            <dt class="col-sm-3">Employer</dt>
+            <dd class="col-sm-9">@item.Company, @item.Country, @item.City</dd>
+            <dt class="col-sm-3">Job Title</dt>
+            <dd class="col-sm-9">@item.Title</dd>
+            <dt class="col-sm-3">Employment Period</dt>
+            <dd class="col-sm-9">@item.StartDate - @item.EndDate</dd>
+            <dt class="col-sm-3">Job Description</dt>
+            <dd class="col-sm-9">@Html.Raw(item.Description)</dd>
+        </dl>
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <a asp-controller="Work" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+            </div>
+            <div class="col-auto">
+                <a asp-controller="Work" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+            </div>
+        </div>
+        if (i != Model.Count - 1)
+        {
+            <hr />
+        }
+    }
+</div>

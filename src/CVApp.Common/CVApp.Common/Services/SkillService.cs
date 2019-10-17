@@ -2,9 +2,11 @@
 using CVApp.Common.Sanitizer;
 using CVApp.Common.Services.Contracts;
 using CVApp.Models;
+using CVApp.ViewModels.Skill;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static CVApp.ViewModels.Skill.SkillViewModels;
@@ -71,6 +73,29 @@ namespace CVApp.Common.Services
                     ResumeId = skill.ResumeId
                 };
             }
+
+            return model;
+        }
+
+        public async Task<IEnumerable<SkillOutViewModel>> GetSkillsInfo(int resumeId)
+        {
+            if (this.resumeId != resumeId)
+            {
+                return null;
+            }
+
+            var skills = await this.skillRepo.All().Where(e => e.ResumeId == this.resumeId).ToListAsync();
+
+            if (skills.Count == 0)
+            {
+                return null;
+            }
+
+            var model = skills.Select(s => new SkillOutViewModel
+            {
+                Name = s.Name,
+                Id = s.Id
+            }).ToList();
 
             return model;
         }

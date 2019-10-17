@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static CVApp.ViewModels.Work.WorkViewModels;
 
@@ -136,6 +137,29 @@ namespace CVApp.Web.Controllers
             }
 
             return this.Redirect(Url.RouteUrl(new { controller = "Resume", action = "Display" }) + "#work");
+        }
+
+        public async Task<IActionResult> Display(int id)
+        {
+            IEnumerable<WorkOutViewModel> workInfo;
+
+            try
+            {
+                workInfo = await this.workService.GetWorkInfo(id);
+
+                if (workInfo == null)
+                {
+                    this.logger.LogDebug($"Can't display work info for user {this.userName}.");
+                    return this.NotFound();
+                }
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, $"An exception happened for user {this.userName}");
+                return this.BadRequest();
+            }
+
+            return this.View(workInfo);
         }
     }
 }

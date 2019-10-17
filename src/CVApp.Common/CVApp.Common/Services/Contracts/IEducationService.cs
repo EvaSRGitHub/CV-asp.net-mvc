@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using static CVApp.ViewModels.Education.EducationViewModels;
 
 namespace CVApp.Common.Services.Contracts
@@ -12,5 +13,7 @@ namespace CVApp.Common.Services.Contracts
         Task Update(EducationEditViewModel model);
 
         Task Delete(EducationEditViewModel model);
+
+        Task<IEnumerable<EducationOutViewModel>> GetEducationInfo(int resumeId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.Common.Services.Contracts
@@ -12,5 +13,7 @@ namespace CVApp.Common.Services.Contracts
         Task Update(WorkEditViewModel model);
 
         Task Delete(WorkEditViewModel model);
+
+        Task<IEnumerable<WorkOutViewModel>> GetWorkInfo(int resumeId);
     }
 }

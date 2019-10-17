@@ -1,0 +1,9 @@
+﻿<div id="skills">
+    <h2 class="mb-3"><a asp-action="Index" asp-controller="Skill" class="title-link" data-toggle="tooltip" data-placement="top" title="Click to create new skill">Skills</a></h2>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <a id="@item.Id" asp-action="EditDelete" asp-controller="Skill" asp-route-id="@item.Id" class="badge badge-secondary badge-font-size mb-3 mx-1" data-toggle="tooltip" data-placement="top" title="Click to edit or delete skill">@item.Name</a>
+        }
+    </div>
+</div>

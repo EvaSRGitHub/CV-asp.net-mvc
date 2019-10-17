@@ -5,8 +5,10 @@ using CVApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using static CVApp.ViewModels.Education.EducationViewModels;
 
 namespace CVApp.Common.Services
@@ -47,6 +49,35 @@ namespace CVApp.Common.Services
             {
                 throw new InvalidOperationException($"Unable to delete education model {model.Id} id.", e);
             }
+        }
+
+        public async Task<IEnumerable<EducationOutViewModel>> GetEducationInfo(int resumeId)
+        {
+           if (this.resumeId != resumeId)
+            {
+                return null;
+            }
+
+            var educ = await this.educationRepo.All().Where(e => e.ResumeId == this.resumeId).OrderByDescending(e => e.StartDate).ThenByDescending(e => e.EndDate).ToListAsync();
+
+            if (educ.Count == 0)
+            {
+                return null;
+            }
+
+            var model = educ.Select(e => new EducationOutViewModel {
+                Institution = HttpUtility.HtmlDecode(e.Institution),
+                StartDate = e.StartDate.ToString("MM/yyyy"),
+                EndDate = e.EndDate.HasValue ? e.EndDate.Value.ToString("MM/yyyy") : "",
+                GPA = e.GPA,
+                MainSubjects = HttpUtility.HtmlDecode(e.MainSubjects),
+                Diploma = HttpUtility.HtmlDecode(e.Diploma),
+                City = e.City,
+                Country = e.Country,
+                EducationId = e.Id
+            }).ToList();
+
+            return model;
         }
 
         public async Task<EducationEditViewModel> EditDeleteForm(int id, string userName)

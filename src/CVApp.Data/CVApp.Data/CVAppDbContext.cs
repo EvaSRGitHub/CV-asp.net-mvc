@@ -20,7 +20,6 @@ namespace CVApp.Data
         public DbSet<Education> Educations { get; set; }
         public DbSet<WorkExperience> Works { get; set; }
         public DbSet<Skill> Skills { get; set; }
-        public DbSet<Certificate> Certificates { get; set; }
         public DbSet<Language> Languages { get; set; }
 
 

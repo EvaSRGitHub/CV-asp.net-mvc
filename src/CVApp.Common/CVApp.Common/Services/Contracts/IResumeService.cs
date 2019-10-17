@@ -7,8 +7,10 @@ namespace CVApp.Common.Services.Contracts
     {
         Task CreateResume(string userId);
 
-        Task<ResumeDisplayViewModel> DisplayResume(string userName);
+        ResumeDisplayViewModel DisplayResume();
 
-        Task Delete(int id, string userName);
+        Task Delete(int id);
+
+        ResumeStartViewModel GetStartInfo();
     }
 }

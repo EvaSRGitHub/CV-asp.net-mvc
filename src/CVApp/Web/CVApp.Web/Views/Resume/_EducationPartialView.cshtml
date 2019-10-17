@@ -1,0 +1,27 @@
+﻿<div id="education">
+    <h2 class="mb-3"><a asp-action="Index" asp-controller="Education" class="title-link" data-toggle="tooltip" data-placement="top" title="Click to create new education info">Education</a></h2>
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var item = Model[i];
+        <dl id="@item.EducationId" class="row">
+            <dt class="col-sm-3">Institution</dt>
+            <dd class="col-sm-9">@item.Institution, @item.Country, @item.City<small class="text-muted"><em> (@item.StartDate - @item.EndDate)</em></small></dd>
+            <dt class="col-sm-3">Diploma</dt>
+            <dd class="col-sm-9">@item.Diploma (GPA - @item.GPA)</dd>
+            <dt class="col-sm-3">Main Subjects</dt>
+            <dd class="col-sm-9">@Html.Raw(item.MainSubjects)</dd>
+        </dl>
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <a asp-controller="Education" asp-action="Edit" asp-route-id="@item.EducationId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+            </div>
+            <div class="col-auto">
+                <a asp-controller="Education" asp-action="Delete" asp-route-id="@item.EducationId" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+            </div>
+        </div>
+        if (i != Model.Count - 1)
+        {
+            <hr />
+        }
+    }
+</div>

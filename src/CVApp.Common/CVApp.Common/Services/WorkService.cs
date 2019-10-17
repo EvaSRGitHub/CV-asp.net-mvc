@@ -2,11 +2,14 @@
 using CVApp.Common.Sanitizer;
 using CVApp.Common.Services.Contracts;
 using CVApp.Models;
+using CVApp.ViewModels.Work;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using static CVApp.ViewModels.Work.WorkViewModels;
 
 namespace CVApp.Common.Services
@@ -78,6 +81,35 @@ namespace CVApp.Common.Services
                     ResumeId = work.ResumeId
                 };
             }
+
+            return model;
+        }
+
+        public async Task<IEnumerable<WorkOutViewModel>> GetWorkInfo(int resumeId)
+        {
+            if (this.resumeId != resumeId)
+            {
+                return null;
+            }
+
+            var workInfo = await this.workRepo.All().Where(e => e.ResumeId == this.resumeId).OrderByDescending(e => e.StartDate).ThenByDescending(e => e.EndDate).ToListAsync();
+
+            if (workInfo.Count == 0)
+            {
+                return null;
+            }
+
+            var model = workInfo.Select(w => new WorkOutViewModel
+            {
+                Company = HttpUtility.HtmlDecode(w.Company),
+                Title = HttpUtility.HtmlDecode(w.Title),
+                StartDate = w.StartDate.ToString("MM/yyyy"),
+                EndDate = w.EndDate.HasValue ? w.EndDate.Value.ToString("MM/yyyy") : "",
+                Description = HttpUtility.HtmlDecode(w.Description),
+                Country = w.Country,
+                City = w.City,
+                Id = w.Id
+            }).ToList();
 
             return model;
         }

@@ -1,0 +1,81 @@
+﻿@model CVApp.ViewModels.Resume.ResumeStartViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <h2>To Do</h2>
+            <hr />
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    @if (@Model.IsPersonalInfoFilled)
+                    {
+                        <a asp-controller="PersonalInfo" asp-action="Display" asp-route-id="@Model.ResumeId">Personal Info</a>
+                        <span class="badge badge-primary badge-pill"><strong>1</strong></span>
+                    }
+                    else
+                    {
+                        <a asp-controller="PersonalInfo" asp-action="Index">Personal Info</a>
+                        <span class="badge badge-primary badge-pill"><strong>0</strong></span>
+                    }
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @if (Model.EducationRecords != 0)
+                    {
+                        <a asp-controller="Education" asp-action="Display" asp-route-id="@Model.ResumeId">Education</a>
+                        <span class="badge badge-primary badge-pill">@Model.EducationRecords</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Education" asp-action="Index" asp-route-id="@Model.ResumeId">Education</a>
+                        <span class="badge badge-primary badge-pill">@Model.EducationRecords</span>
+                    }
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @if (Model.WorkRecords != 0)
+                    {
+                        <a asp-controller="Work" asp-action="Display" asp-route-id="@Model.ResumeId">Work</a>
+                        <span class="badge badge-primary badge-pill">@Model.WorkRecords</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Work" asp-action="Index" asp-route-id="@Model.ResumeId">Work</a>
+                        <span class="badge badge-primary badge-pill">@Model.WorkRecords</span>
+                    }
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @if (Model.SkillRecords != 0)
+                    {
+                        <a asp-controller="Skill" asp-action="Display" asp-route-id="@Model.ResumeId">Skills</a>
+                        <span class="badge badge-primary badge-pill">@Model.SkillRecords</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Skill" asp-action="Index" asp-route-id="@Model.ResumeId">Skills</a>
+                        <span class="badge badge-primary badge-pill">@Model.SkillRecords</span>
+                    }
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @if (Model.LanguageRecords != 0)
+                    {
+                        <a asp-controller="Language" asp-action="Display" asp-route-id="@Model.ResumeId">Languages</a>
+                        <span class="badge badge-primary badge-pill">@Model.LanguageRecords</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Language" asp-action="Index" asp-route-id="@Model.ResumeId">Languages</a>
+                        <span class="badge badge-primary badge-pill">@Model.LanguageRecords</span>
+                    }
+                </li>
+            </ul>
+            <div class="col-md-1 mt-5">
+                <a asp-action="GetPdf" asp-controller="Dashboard" class="btn btn-warning" role="button">PDF</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

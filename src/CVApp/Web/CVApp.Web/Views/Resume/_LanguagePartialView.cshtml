@@ -1,0 +1,36 @@
+﻿@{
+
+    Dictionary<string, int> percents = new Dictionary<string, int>()
+{
+{ "Beginner/A1", 10},
+{ "Elementary/A2", 20},
+{ "Intermediate/B1", 30 },
+{ "Upper Intermediate/B2", 50},
+{ "Advanced/C1", 80 },
+{ "Proficient/C2", 100 }
+};
+
+    var percent = 0;
+}
+
+<div id="languages">
+    <h2 class="mb-3"><a asp-action="Index" asp-controller="Language" class="title-link" data-toggle="tooltip" data-placement="top" title="Click to create new language">Languages</a></h2>
+    @foreach (var item in Model)
+    {
+        <div id="@item.Id" class="col-12">
+            @{ percent = percents[item.Level]; }
+            <label>@item.Name - @item.Level</label>
+            <div class="progress mb-3">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
+            </div>
+            <div class="row justify-content-end mb-3">
+                <div class="col-auto">
+                    <a asp-controller="Language" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>
+                </div>
+                <div class="col-auto">
+                    <a asp-controller="Language" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mt-3" role="button" aria-pressed="true">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
