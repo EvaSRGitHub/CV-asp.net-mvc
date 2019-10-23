@@ -3,11 +3,11 @@
     @for (int i = 0; i < Model.Count; i++)
     {
         var item = Model[i];
-        <dl id="@item.EducationId" class="row">
+        <dl id="@item.EducationId" class="row col-12">
             <dt class="col-sm-3">Institution</dt>
-            <dd class="col-sm-9">@item.Institution, @item.Country, @item.City<small class="text-muted"><em> (@item.StartDate - @item.EndDate)</em></small></dd>
+            <dd class="col-sm-9 text-bold-italic">@item.Institution, @item.Country, @item.City<small class="text-muted"><em> (@item.StartDate - @item.EndDate)</em></small></dd>
             <dt class="col-sm-3">Diploma</dt>
-            <dd class="col-sm-9">@item.Diploma (GPA - @item.GPA)</dd>
+            <dd class="col-sm-9 text-bold-italic">@item.Diploma (GPA - @item.GPA)</dd>
             <dt class="col-sm-3">Main Subjects</dt>
             <dd class="col-sm-9">@Html.Raw(item.MainSubjects)</dd>
         </dl>

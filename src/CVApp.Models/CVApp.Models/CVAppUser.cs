@@ -15,10 +15,6 @@ namespace CVApp.Models
         
         public string LastName { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
-
-        public string Address { get; set; }
-
         public string Summary { get; set; }
 
         public string Picture { get; set; }

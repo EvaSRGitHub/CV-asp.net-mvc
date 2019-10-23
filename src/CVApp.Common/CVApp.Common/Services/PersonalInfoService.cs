@@ -2,7 +2,6 @@
 using CVApp.Common.Sanitizer;
 using CVApp.Common.Services.Contracts;
 using CVApp.Models;
-using CVApp.ViewModels.PersonalInfo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -50,15 +49,13 @@ namespace CVApp.Common.Services
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth.HasValue? user.DateOfBirth.Value : DateTime.Now,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Picture = null,
                 CurrentPicture = user.Picture,
-                Address = user.Address,
                 RepoProfile = user.RepoProfile,
                 Summary = user.Summary,
-                ResumeId = this.resumeId.Value
+                ResumeId = this.resumeId.Value,
             };
             
             return model;
@@ -104,10 +101,8 @@ namespace CVApp.Common.Services
 
             personalInfo.FirstName = this.sanitizer.Sanitize(model.FirstName);
             personalInfo.LastName = this.sanitizer.Sanitize(model.LastName);
-            personalInfo.DateOfBirth = model.DateOfBirth;
             personalInfo.PhoneNumber = this.sanitizer.Sanitize(model.PhoneNumber);
             personalInfo.Email = this.sanitizer.Sanitize(model.Email);
-            personalInfo.Address = this.sanitizer.Sanitize(model.Address);
             personalInfo.Summary = this.sanitizer.Sanitize(model.Summary);
             personalInfo.RepoProfile = this.sanitizer.Sanitize(model.RepoProfile);
 
@@ -170,13 +165,11 @@ namespace CVApp.Common.Services
             var model = new PersonalInfoOutViewModel()
             {
                 Id = user.Id,
-                Address = user.Address,
                 Picture = user.Picture,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                DateOfBirth = user.DateOfBirth.HasValue ? user.DateOfBirth.Value.ToShortDateString() : null,
                 RepoProfile = user.RepoProfile,
                 Summary = HttpUtility.HtmlDecode(user.Summary),
                 ResumeId = this.resumeId.Value

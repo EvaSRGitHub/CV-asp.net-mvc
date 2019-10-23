@@ -5,29 +5,33 @@
     <h2 class="mb-3"><a asp-action="Index" asp-controller="PersonalInfo" class="title-link" data-toggle="tooltip" data-placement="top" title="Click to create your personal info">Personal Info</a></h2>
     @if (!string.IsNullOrWhiteSpace(Model.FirstName))
     {
-        <div class="row">
-            <div class="col-sm-3 col-md-3">
-                <div class="about-img">
-                    <img src="@Model.Picture" class="img-fluid rounded b-shadow-a" alt="">
+        <div class="row col-12">
+            @if (Model.Picture != null)
+            {
+                <div class="col-sm-3 col-md-3">
+                    <div class="about-img">
+                        <img src="@Model.Picture" class="img-fluid rounded-circle b-shadow-a" alt="">
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-6 col-md-6">
-                <div class="about-info">
-                    @{name = Model.FirstName + " " + Model.LastName;}
-                    <p><b>Name: </b> <span>@name</span></p>
-                    <p><b>Date of birth: </b> <span>@Model.DateOfBirth</span></p>
-                    <p><b>Email: </b> <span>@Model.Email</span></p>
-                    <p><b>Phone: </b> <span>@Model.PhoneNumber</span></p>
-                    <p><b>Address: </b> <span>@Model.Address</span></p>
-                    <p><a href="@Model.RepoProfile">View my portfolio</a></p>
-                </div>
-            </div>
+            }
         </div>
-        <h5 class="title-left">About me</h5>
-        <div class="row pt-2 pl-3">
-            @Html.Raw(Model.Summary)
+        <div class="row col-12 mt-3">
+            @{name = Model.FirstName + " " + Model.LastName;}
+            <p><b>Name: </b> <span>@name, </span><b>Email: </b> <span>@Model.Email, </span><b>Phone: </b> <span>@Model.PhoneNumber</span></p>
         </div>
 
+        @if (!string.IsNullOrWhiteSpace(Model.RepoProfile))
+        {
+            <p><a href="@Model.RepoProfile">View my portfolio</a></p>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Summary))
+        {
+            <h5 class="title-left col-12 mt-3">About me</h5>
+            <div class="row col-12 pt-2 pl-3">
+                @Html.Raw(Model.Summary)
+            </div>
+        }
         <div class="row justify-content-end">
             <div class="col-auto">
                 <a asp-controller="PersonalInfo" asp-action="Edit" asp-route-resumeId="@Model.ResumeId" class="btn btn-primary mt-3" role="button" aria-pressed="true">Edit</a>

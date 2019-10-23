@@ -68,10 +68,10 @@ namespace CVApp.Web.Controllers
         }
 
 
-        //public IActionResult ResumeToPDF()
-        //{
-        //    var model = this.resumeService.DisplayResume();
-        //    return this.View(model);
-        //}
+        public IActionResult ResumeToPDF()
+        {
+            var model = this.resumeService.DisplayResume();
+            return this.View(model);
+        }
     }
 }

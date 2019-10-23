@@ -1,25 +1,19 @@
 ﻿using CVApp.Common.GeneratePDF.Contracts;
-using CVApp.Common.IronPdfConverter;
 using CVApp.Common.Services.Contracts;
-using CVApp.Models;
-using CVApp.ViewModels.Resume;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CVApp.Web.Controllers
 {
     public class DashboardController : Controller
     {
-        private readonly Common.GeneratePDF.Contracts.IViewRenderService viewRenderService;
+        private readonly IViewRenderService viewRenderService;
         private readonly IHtmlToPdfConverter htmlToPdfConverter;
         private readonly IHostingEnvironment environment;
         private readonly IResumeService resumeService;
 
-        public DashboardController(Common.GeneratePDF.Contracts.IViewRenderService viewRenderService, IHtmlToPdfConverter htmlToPdfConverter, IHostingEnvironment environment, IResumeService resumeService)
+        public DashboardController(IViewRenderService viewRenderService, IHtmlToPdfConverter htmlToPdfConverter, IHostingEnvironment environment, IResumeService resumeService)
         {
             this.viewRenderService = viewRenderService;
             this.htmlToPdfConverter = htmlToPdfConverter;

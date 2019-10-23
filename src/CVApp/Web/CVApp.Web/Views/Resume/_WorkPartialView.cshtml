@@ -3,14 +3,14 @@
     @for (int i = 0; i < Model.Count; i++)
     {
         var item = Model[i];
-        <dl id="@item.Id" class="row">
+        <dl id="@item.Id" class="row col-12">
             <dt class="col-sm-3">Employer</dt>
-            <dd class="col-sm-9">@item.Company, @item.Country, @item.City</dd>
+            <dd class="col-sm-9 text-bold-italic">@item.Company, @item.Country, @item.City</dd>
             <dt class="col-sm-3">Job Title</dt>
-            <dd class="col-sm-9">@item.Title</dd>
+            <dd class="col-sm-9 text-bold-italic">@item.Title</dd>
             <dt class="col-sm-3">Employment Period</dt>
-            <dd class="col-sm-9">@item.StartDate - @item.EndDate</dd>
-            <dt class="col-sm-3">Job Description</dt>
+            <dd class="col-sm-9 text-bold-italic">@item.StartDate - @item.EndDate</dd>
+            <dt class="col-sm-3 ">Job Description</dt>
             <dd class="col-sm-9">@Html.Raw(item.Description)</dd>
         </dl>
         <div class="row justify-content-end">

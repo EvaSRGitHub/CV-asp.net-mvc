@@ -19,7 +19,7 @@
     {
         <div id="@item.Id" class="col-12">
             @{ percent = percents[item.Level]; }
-            <label>@item.Name - @item.Level</label>
+            <label class="text-bold-italic">@item.Name - @item.Level</label>
             <div class="progress mb-3">
                 <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@(percent)%</div>
             </div>

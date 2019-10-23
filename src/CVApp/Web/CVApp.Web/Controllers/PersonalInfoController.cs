@@ -75,6 +75,7 @@ namespace CVApp.Web.Controllers
                 this.logger.LogDebug(e, $" An exception happened for user {userName}");
                 return this.BadRequest();
             }
+
            
             return this.View(model);
         }

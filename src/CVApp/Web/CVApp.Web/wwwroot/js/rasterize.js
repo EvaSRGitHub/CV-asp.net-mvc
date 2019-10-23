@@ -8,8 +8,7 @@ console.log('Usage: rasterize.js [URL] [filename] [paperformat] [orientation]');
 address = system.args[1];
 output = system.args[2];
 
-page.viewportSize = { width: 1280, height: 1024 };
-page.dpi = 300;
+page.viewportSize = { height: 800, width: 600 };
 page.settings.localToRemoteUrlAccessEnabled = true;
 page.settings.webSecurityEnabled = false;
 
@@ -31,9 +30,9 @@ page.open(address, function (status) {
         phantom.exit(1);
     } else {
         page.settings.localToRemoteUrlAccessEnabled = true;
-        
+
         window.setTimeout(function () {
-            page.render(output);
+            page.render(output, { format: 'pdf', quality: '100' });
             phantom.exit();
         }, 5000);
     }

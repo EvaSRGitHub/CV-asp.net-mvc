@@ -1,8 +1,45 @@
-﻿dl, em{
+﻿body {
+    background-color: rgba(17,17,17,0.9);
+    color: wheat;
+}
+
+#nav {
+    background-color: rgba(17,17,17,0.9);
+}
+
+#nav > container {
+background-color: rgba(17,17,17,0.9);
+}
+
+#cookieConsent {
+    background-color: #A0A0A0;
+    border-color: black;
+}
+
+    #cookieConsent a, #cookieConsent a:hover {
+        color: #007C19;
+    }
+
+.alert-dismissible .close {
+    color:black;
+ }
+
+.nav-link{
+    color:wheat;
+}
+
+.jumbotron {
+    background-color: rgba(17,17,17,0.9);
+    color: orange;
+}
+
+dl, em{
     font-size: 1.2em;
 }
 
 .frame{
+    background-color: white;
+    color: black;
     padding: 3em;
     border: solid 1px;
 }
@@ -20,6 +57,7 @@ a.navbar-brand {
   text-align: center;
   word-break: break-all;
 }
+
 .title-link:hover{
     text-decoration: none;
 }
@@ -33,9 +71,21 @@ a.navbar-brand {
     color: #967777;
 }
 
+.modal-body {
+    color: black;
+}
+
+dd.text-bold-italic, label.text-bold-italic {
+    font-style: italic;
+    font-weight: bold;
+}
+
+p{
+    text-align: justify;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+    html {
     font-size: 14px;
 }
 @media (min-width: 768px) {

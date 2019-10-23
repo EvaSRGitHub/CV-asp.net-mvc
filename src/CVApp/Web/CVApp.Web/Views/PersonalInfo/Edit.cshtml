@@ -34,19 +34,7 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class='col-md-6'>
-                        <div class="form-group">
-                            <label asp-for="DateOfBirth" class="font-weight-bold text-secondary"></label>
-                            <div class="input-group date" id="datetimepickerDate" data-target-input="nearest">
-                                <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDate" value="@Model.DateOfBirth.ToString("d", CultureInfo.InvariantCulture)" />
-                                <div class="input-group-append" data-target="#datetimepickerDate" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <label asp-for="RepoProfile" class="font-weight-bold text-secondary"></label>
                         <input asp-for="RepoProfile" type="url" class="form-control" value="@Model.RepoProfile">
                         <span asp-validation-for="RepoProfile" class="text-danger"></span>
@@ -67,11 +55,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Address" class="font-weight-bold text-secondary"></label>
-                    <input asp-for="Address" class="form-control" value="@Model.Address">
-                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 <div class="form-group" style="padding: 1px;">
                     <label asp-for="Summary" class="font-weight-bold text-secondary"></label>

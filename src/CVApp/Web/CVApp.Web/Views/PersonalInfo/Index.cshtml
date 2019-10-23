@@ -34,33 +34,16 @@
                 </div>
                 
                 <div class="form-row">
-                    <div class='col-md-4'>
-                        <div class="form-group">
-                            <label asp-for="DateOfBirth"></label>
-                            <div class="input-group date" id="datetimepickerDate" data-target-input="nearest">
-                                <input asp-for="DateOfBirth" type="text" class="form-control datetimepicker-input" data-target="#datetimepickerDate" placeholder="MM/dd/yyyy" />
-                                <div class="input-group-append" data-target="#datetimepickerDate" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label asp-for="Picture"></label>
                         <input asp-for="Picture" type="file" class="form-control-file" placeholder="Uplode your picture here">
                         <span asp-validation-for="Picture" class="text-danger"></span>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label asp-for="RepoProfile"></label>
                         <input asp-for="RepoProfile" type="url" class="form-control" placeholder="Paste your portfolio url here">
                         <span asp-validation-for="RepoProfile" class="text-danger"></span>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Address">Address</label>
-                    <input asp-for="Address" class="form-control" placeholder="12 Downing Str, London, England">
-                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 <div class="form-group" style="padding: 1px;">
                     <label asp-for="Summary">Summary</label>

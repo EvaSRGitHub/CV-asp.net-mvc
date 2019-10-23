@@ -1,13 +1,11 @@
-﻿
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    /* Margin bottom by footer height */
+﻿body {
+    /*Margin bottom by footer height*/
     margin-bottom: 60px;
     font-size: 1em;
+}
+
+p {
+    text-align: justify;
 }
 
 .footer {
@@ -15,9 +13,8 @@ body {
     bottom: 0;
     width: 100%;
     white-space: nowrap;
-    /* Set the fixed height of the footer here */
     height: 60px;
-    line-height: 60px; /* Vertically center the text there */
+    line-height: 60px;
 }
 
 small, .small {
@@ -30,17 +27,19 @@ a:not([href]):not([tabindex]) {
 }
 
 dl {
-  width: 75%;
-  overflow: hidden;
-  padding: 0;
-  margin: 0
+    width: 75%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0
 }
+
 dt {
-  float: left;
-  width: 25%;
-  padding: 0;
-  margin: 0
+    float: left;
+    width: 25%;
+    padding: 0;
+    margin: 0
 }
+
 dd {
     float: left;
     white-space: normal;
@@ -49,10 +48,21 @@ dd {
     margin: 0;
 }
 
+dd.text-bold-italic, label.text-bold-italic {
+    font-style: italic;
+    font-weight: bold;
+}
+
 .frame-hr {
     border-bottom: double;
 }
 
-.wrapper{
+.wrapper {
     width: 75%;
 }
+
+.padLeft{
+    padding-left:15px;
+}
+
+

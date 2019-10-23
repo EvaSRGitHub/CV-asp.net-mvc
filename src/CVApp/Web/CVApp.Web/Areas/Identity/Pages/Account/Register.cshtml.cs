@@ -59,9 +59,18 @@ namespace CVApp.Web.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-        public void OnGet(string returnUrl = null)
+        public IActionResult OnGet(string returnUrl = null)
         {
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            if (this.User.Identity.IsAuthenticated)
+            {
+                return LocalRedirect(returnUrl);
+            }
+
             ReturnUrl = returnUrl;
+
+            return this.Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

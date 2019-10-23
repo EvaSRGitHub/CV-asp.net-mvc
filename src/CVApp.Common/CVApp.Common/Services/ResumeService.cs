@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -183,8 +182,6 @@ namespace CVApp.Common.Services
             user.FirstName = null;
             user.LastName = null;
             user.Email = null;
-            user.DateOfBirth = null;
-            user.Address = null;
             user.CloudinaryPublicId = null;
         }
 
@@ -243,13 +240,11 @@ namespace CVApp.Common.Services
             return new PersonalInfoOutViewModel()
             {
                 Id = resume.User.Id,
-                Address = resume.User.Address,
                 Picture = resume.User.Picture,
                 FirstName = resume.User.FirstName,
                 LastName = resume.User.LastName,
                 Email = resume.User.Email,
                 PhoneNumber = resume.User.PhoneNumber,
-                DateOfBirth = resume.User.DateOfBirth.HasValue ? resume.User.DateOfBirth.Value.ToString("d", CultureInfo.InvariantCulture) : null,
                 RepoProfile = resume.User.RepoProfile,
                 Summary = HttpUtility.HtmlDecode(resume.User.Summary),
                 ResumeId = resume.Id
